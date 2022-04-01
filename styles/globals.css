@@ -1,3 +1,379 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.OUTLINE {
+  stroke-linejoin: round;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+#CD46110 {
+  fill: #f1c40f;
+}
+#CD46130 {
+  fill: #16a085;
+}
+#CD46150 {
+  fill: #f39c12;
+}
+#CD46170 {
+  fill: #2ecc71;
+}
+#CD46230 {
+  fill: #e67e22;
+}
+#CD46710 {
+  fill: #27ae60;
+}
+#CD46720 {
+  fill: #d35400;
+}
+#CD46730 {
+  fill: #3498db;
+}
+#CD46770 {
+  fill: #e74c3c;
+}
+#CD46780 {
+  fill: #2980b9;
+}
+#CD46790 {
+  fill: #c0392b;
+}
+#CD46800 {
+  fill: #9b59b6;
+}
+#CD46810 {
+  fill: #8e44ad;
+}
+#CD46820 {
+  fill: #34495e;
+}
+#CD46830 {
+  fill: #2c3e50;
+}
+#CD46840 {
+  fill: #1abc9c;
+}
+#CD46860 {
+  fill: #f1c40f;
+}
+#CD46870 {
+  fill: #16a085;
+}
+#CD46880 {
+  fill: #f39c12;
+}
+#CD46890 {
+  fill: #2ecc71;
+}
+#CD46900 {
+  fill: #e67e22;
+}
+#CD46910 {
+  fill: #27ae60;
+}
+
+#CD27110 {
+  fill: #f1c40f;
+}
+#CD27140 {
+  fill: #16a085;
+}
+#CD27170 {
+  fill: #f39c12;
+}
+#CD27200 {
+  fill: #2ecc71;
+}
+#CD27230 {
+  fill: #e67e22;
+}
+#CD27260 {
+  fill: #27ae60;
+}
+#CD27290 {
+  fill: #d35400;
+}
+#CD27710 {
+  fill: #3498db;
+}
+
+#CD45111 {
+  fill: #f1c40f;
+}
+#CD45113 {
+  fill: #16a085;
+}
+#CD45130 {
+  fill: #f39c12;
+}
+#CD45140 {
+  fill: #2ecc71;
+}
+#CD45180 {
+  fill: #e67e22;
+}
+#CD45190 {
+  fill: #27ae60;
+}
+#CD45210 {
+  fill: #d35400;
+}
+#CD45710 {
+  fill: #3498db;
+}
+#CD45720 {
+  fill: #e74c3c;
+}
+#CD45730 {
+  fill: #2980b9;
+}
+#CD45740 {
+  fill: #c0392b;
+}
+#CD45750 {
+  fill: #9b59b6;
+}
+#CD45770 {
+  fill: #8e44ad;
+}
+#CD45790 {
+  fill: #34495e;
+}
+#CD45800 {
+  fill: #2c3e50;
+}
+
+#CD36110101 {
+  fill: #f1c40f;
+}
+#CD36110102 {
+  fill: #16a085;
+}
+#CD36110103 {
+  fill: #f39c12;
+}
+#CD36110104 {
+  fill: #2ecc71;
+}
+#CD36110105 {
+  fill: #e67e22;
+}
+#CD36110106 {
+  fill: #27ae60;
+}
+#CD36110107 {
+  fill: #d35400;
+}
+#CD36110108 {
+  fill: #3498db;
+}
+#CD36110109 {
+  fill: #e74c3c;
+}
+#CD36110110 {
+  fill: #2980b9;
+}
+#CD36110111 {
+  fill: #c0392b;
+}
+#CD36110112 {
+  fill: #9b59b6;
+}
+#CD36110113 {
+  fill: #8e44ad;
+}
+#CD36110114 {
+  fill: #34495e;
+}
+#CD36110250 {
+  fill: #2c3e50;
+}
+#CD36110310 {
+  fill: #1abc9c;
+}
+#CD36110320 {
+  fill: #f1c40f;
+}
+#CD36110330 {
+  fill: #16a085;
+}
+#CD36110340 {
+  fill: #f39c12;
+}
+#CD36110350 {
+  fill: #2ecc71;
+}
+#CD36110360 {
+  fill: #e67e22;
+}
+#CD36110370 {
+  fill: #27ae60;
+}
+#CD36110380 {
+  fill: #d35400;
+}
+#CD36110390 {
+  fill: #3498db;
+}
+
+#CD41111 {
+  fill: #f1c40f;
+}
+#CD41113 {
+  fill: #16a085;
+}
+#CD41115 {
+  fill: #f39c12;
+}
+#CD41117 {
+  fill: #2ecc71;
+}
+#CD41131 {
+  fill: #e67e22;
+}
+#CD41133 {
+  fill: #27ae60;
+}
+#CD41135 {
+  fill: #d35400;
+}
+#CD41150 {
+  fill: #3498db;
+}
+#CD41171 {
+  fill: #e74c3c;
+}
+#CD41173 {
+  fill: #2980b9;
+}
+#CD41190 {
+  fill: #c0392b;
+}
+#CD41210 {
+  fill: #9b59b6;
+}
+#CD41220 {
+  fill: #8e44ad;
+}
+#CD41250 {
+  fill: #34495e;
+}
+#CD41271 {
+  fill: #2c3e50;
+}
+#CD41273 {
+  fill: #1abc9c;
+}
+#CD41281 {
+  fill: #f1c40f;
+}
+#CD41285 {
+  fill: #16a085;
+}
+#CD41287 {
+  fill: #f39c12;
+}
+#CD41290 {
+  fill: #2ecc71;
+}
+#CD41310 {
+  fill: #e67e22;
+}
+#CD41360 {
+  fill: #27ae60;
+}
+#CD41370 {
+  fill: #d35400;
+}
+#CD41390 {
+  fill: #3498db;
+}
+#CD41410 {
+  fill: #e74c3c;
+}
+#CD41430 {
+  fill: #2980b9;
+}
+#CD41450 {
+  fill: #c0392b;
+}
+#CD41461 {
+  fill: #9b59b6;
+}
+#CD41463 {
+  fill: #8e44ad;
+}
+#CD41465 {
+  fill: #34495e;
+}
+#CD41480 {
+  fill: #2c3e50;
+}
+#CD41500 {
+  fill: #1abc9c;
+}
+#CD41550 {
+  fill: #f1c40f;
+}
+#CD41570 {
+  fill: #16a085;
+}
+#CD41590 {
+  fill: #f39c12;
+}
+#CD41610 {
+  fill: #2ecc71;
+}
+#CD41630 {
+  fill: #e67e22;
+}
+#CD41650 {
+  fill: #27ae60;
+}
+#CD41670 {
+  fill: #d35400;
+}
+#CD41800 {
+  fill: #3498db;
+}
+#CD41820 {
+  fill: #e74c3c;
+}
+#CD41830 {
+  fill: #2980b9;
+}
+
+#CD30110 {
+  fill: #f1c40f;
+}
+#CD30140 {
+  fill: #16a085;
+}
+#CD30170 {
+  fill: #f39c12;
+}
+#CD30200 {
+  fill: #2ecc71;
+}
+#CD30230 {
+  fill: #e67e22;
+}
+.LINE {
+  stroke-linejoin: round;
+  stroke: #ffffff;
+  stroke-width: 1;
+  fill: none;
+}
+.POINT {
+  stroke: #ffffff;
+  stroke-width: 1;
+  fill: #ffffff;
+}
+.TEXT {
+  fill: #ffffff;
+  font-size: 16px;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}

@@ -1,11 +1,19 @@
+
+import KakaoMap from '@components/KakaoMap';
+import Search from '@components/Search/Search';
+
 import { NextPage } from 'next';
+
 
 
 const Postes: NextPage = () => {
 
     return (
-        <div>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => <div>게시물입니다.</div>)}
+        <div className="">
+            <Search />
+            <div className="flex">
+                <KakaoMap latitude={33.450701} longitude={126.570667} />
+            </div>
         </div>
     )
 
