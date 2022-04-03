@@ -1,16 +1,16 @@
 import useMap from '@libs/client/useMap';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector, useStore } from 'react-redux';
+import { RootState } from '@modules/index';
 
 
 
-interface IKakaoMap {
-    latitude: number;
-    longitude: number;
-}
 
+const KakaoMap = () => {
 
-const KakaoMap = ({ latitude, longitude }: IKakaoMap) => {
-
+    const { focusPosition: { latitude, longitude } } = useSelector((state: RootState) => state.map);
+    const [map, setMap] = useState(null);
+    const dispatch = useDispatch();
     const data = [[33.450701, 126.570667], [33.450701, 126.550667]];
     const mapLoaded = useMap();
     const makeMarker = (lat: number, long: number, map: any) => {
@@ -36,11 +36,21 @@ const KakaoMap = ({ latitude, longitude }: IKakaoMap) => {
                 level: 5
             }
             const map = new window.kakao.maps.Map(container, options);
+            setMap(map);
             data.forEach(([lat, long]) => makeMarker(lat, long, map));
-        })
-
+        });
 
     }, [mapLoaded]);
+
+    useEffect(() => {
+        if (map) {
+
+            (map as any).panTo(new window.kakao.maps.LatLng(latitude, longitude));
+        }
+    }, [latitude, longitude])
+
+
+
 
     return <div id="map" style={{ width: "400px", height: "400px" }}></div>
 }

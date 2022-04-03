@@ -1,7 +1,9 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { useEffect } from 'react'
+import SWRDevtools from "@jjordy/swr-devtools";
 
+import { Provider } from "react-redux";
+import { store } from "@modules/index";
 
 declare global {
   interface Window {
@@ -12,9 +14,12 @@ declare global {
 function MyApp({ Component, pageProps }: AppProps) {
 
 
-
   return <div className="w-full h-[100vh]">
-    <Component {...pageProps} />
+
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
+
   </div>
 }
 

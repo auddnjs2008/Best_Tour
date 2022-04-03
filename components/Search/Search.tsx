@@ -1,16 +1,23 @@
+
 import useLocalSwr from '@libs/client/useLocalSwr';
-import { useState } from 'react';
-import useSWR from 'swr';
+import { useEffect, useState } from 'react';
 import SearchForm from './SearchForm';
-import SearchRecord from './SearchRecord';
+import SearchInfo from './SearchInfo';
+
 
 const Search = () => {
-    const { data, mutate } = useLocalSwr("searchData");
+
+    const [inputFocus, setInputFocus] = useState(false);
+
+    const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.currentTarget !== e.target) return;
+        setInputFocus(false);
+    }
 
     return (
-        <div className="max-w-lg border-2 mx-auto">
-            <SearchForm />
-            <SearchRecord />
+        <div onClick={onClick} className="w-full  mx-auto ">
+            <SearchForm setInputFocus={setInputFocus} />
+            {inputFocus ? <SearchInfo setInputFocus={setInputFocus} /> : null}
         </div>
     )
 }

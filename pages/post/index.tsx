@@ -12,7 +12,7 @@ const Postes: NextPage = () => {
         <div className="">
             <Search />
             <div className="flex">
-                <KakaoMap latitude={33.450701} longitude={126.570667} />
+                <KakaoMap />
             </div>
         </div>
     )

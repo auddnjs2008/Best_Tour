@@ -8,11 +8,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@jjordy/swr-devtools": "^2.2.0",
+    "@reduxjs/toolkit": "^1.8.1",
     "@svg-maps/south-korea": "^1.0.1",
     "next": "12.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.29.0",
+    "react-redux": "^7.2.8",
+    "redux-devtools-extension": "^2.13.9",
     "swr": "^1.2.2",
     "tailwind-scrollbar-hide": "^1.1.7"
   },

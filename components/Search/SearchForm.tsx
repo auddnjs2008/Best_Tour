@@ -1,22 +1,32 @@
-import useLocalSwr from '@libs/client/useLocalSwr';
+
 import useMap from '@libs/client/useMap';
-import { useEffect, useState } from 'react';
+import { searchData } from '@modules/searchSlice';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
+import { useDispatch } from 'react-redux';
 
 interface FormValue {
     place: string;
 }
 
+interface ISearchForm {
+    setInputFocus: Dispatch<SetStateAction<boolean>>
+}
 
-const SearchForm = () => {
+const SearchForm = ({ setInputFocus }: ISearchForm) => {
     const { register, handleSubmit, resetField, watch } = useForm<FormValue>();
     const mapLoaded = useMap();
     const watchInput = watch("place");
-    const { data, mutate } = useLocalSwr("searchData");
+    const dispatch = useDispatch();
+
+
 
     useEffect(() => {
-        if (watchInput)
-            kakaoSearch(watchInput);
+        if (!watchInput) {
+            dispatch(searchData([]));
+            return;
+        }
+        kakaoSearch(watchInput);
     }, [watchInput]);
 
     const kakaoSearch = (place: string) => {
@@ -24,7 +34,7 @@ const SearchForm = () => {
             const places = new window.kakao.maps.services.Places();
             const callback = function (result: any, status: any) {
                 if (status === window.kakao.maps.services.Status.OK) {
-                    mutate(result);
+                    dispatch(searchData(result));
                 }
             }
 
@@ -40,12 +50,16 @@ const SearchForm = () => {
         resetField("place");
     }
 
+    const onFocus = () => {
+        setInputFocus(true);
+    }
+
 
 
 
     return (
-        <form onSubmit={handleSubmit(onValid)} className=" flex content-center ">
-            <input className=" w-full mx-auto border-2 p-3 rounded-md outline-none shadow-lg "  {...register("place", { required: true })} type="text" placeholder="Search.." />
+        <form onSubmit={handleSubmit(onValid)} className="max-w-lg mx-auto flex content-center ">
+            <input onFocus={onFocus} className=" w-full mx-auto border-2 p-3 rounded-md outline-none shadow-lg "  {...register("place", { required: true })} type="text" placeholder="Search.." />
         </form>
     )
 }
