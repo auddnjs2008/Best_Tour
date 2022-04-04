@@ -9,14 +9,15 @@ const Search = () => {
 
     const [inputFocus, setInputFocus] = useState(false);
 
-    const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const onClick = (e: any) => {
         if (e.currentTarget !== e.target) return;
         setInputFocus(false);
     }
 
+
     return (
-        <div onClick={onClick} className="w-full  mx-auto ">
-            <SearchForm setInputFocus={setInputFocus} />
+        <div onClick={onClick} className="w-full  mx-auto relative">
+            <SearchForm inputFocus={inputFocus} setInputFocus={setInputFocus} />
             {inputFocus ? <SearchInfo setInputFocus={setInputFocus} /> : null}
         </div>
     )

@@ -1,4 +1,5 @@
 import { RootState } from '@modules/index';
+import { closeWindow } from '@modules/LikeSlice';
 import { focusMap } from '@modules/mapSlice';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,16 +18,14 @@ const SearchInfo = ({ setInputFocus }: ISearchInfo) => {
         const target = (e.target as Element).closest("li");
         const { id } = target as any;
         if (data && data.length) {
-            const { x, y } = data[id];
-            dispatch(focusMap({ latitude: y, longitude: x }));
+            dispatch(focusMap(data[id]));
+            dispatch(closeWindow());
             setInputFocus(false);
         }
     }
 
-
-
     return (
-        <div className="max-w-lg mx-auto h-[100vh] overflow-scroll scrollbar-hide  bg-white z-10">
+        <div className="absolute z-30 top-14 w-full mx-auto h-[80vh] overflow-scroll scrollbar-hide  bg-white ">
             <div>
                 <div className="p-3">
                     <span className="text-lg font-bold mr-5">최근검색</span>

@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type positionType = { latitude: number; longitude: number };
-
 export interface MapState {
-  focusPosition: positionType;
+  focusPosition: any;
 }
 
 const initialState: MapState = {
@@ -14,7 +12,7 @@ export const mapSlice = createSlice({
   name: "map",
   initialState,
   reducers: {
-    focusMap: (state, action: PayloadAction<positionType>) => {
+    focusMap: (state, action: PayloadAction<any>) => {
       state.focusPosition = action.payload;
     },
   },
