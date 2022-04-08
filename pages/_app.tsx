@@ -4,6 +4,8 @@ import SWRDevtools from "@jjordy/swr-devtools";
 
 import { Provider } from "react-redux";
 import { store } from "@modules/index";
+import { SWRConfig } from 'swr';
+import { responseSymbol } from 'next/dist/server/web/spec-compliant/fetch-event';
 
 declare global {
   interface Window {
@@ -14,13 +16,15 @@ declare global {
 function MyApp({ Component, pageProps }: AppProps) {
 
 
-  return <div className="w-full h-[100vh]">
-
-    <Provider store={store}>
-      <Component {...pageProps} />
-    </Provider>
-
-  </div>
+  return (
+    <SWRConfig value={{ fetcher: (url: string) => fetch(url).then(response => response.json()) }}>
+      <div className="w-full h-[100vh]">
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </div>
+    </SWRConfig>
+  )
 }
 
 export default MyApp

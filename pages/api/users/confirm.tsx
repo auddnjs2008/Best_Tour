@@ -1,6 +1,6 @@
 import client from "@libs/server/client";
 import withHandler from "@libs/server/withHandler";
-import { withIronSessionApiRoute } from 'iron-session/next/dist';
+import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(
@@ -9,6 +9,7 @@ async function handler(
 ) {
 
     const { token } = req.body;
+
     const foundToken = await client.token.findUnique({
         where: {
             payload: token
@@ -32,5 +33,6 @@ async function handler(
 
 export default withIronSessionApiRoute(withHandler("POST", handler), {
     cookieName: "besttoursession",
-    password: "aflweiruqiopw;lkja;lskdjf]qwieorujklj;liaij;asdiwekvmvmvmv"
+    password: process.env.SESSION_KEY!
+
 });
