@@ -1,20 +1,36 @@
 import useMutation from '@libs/client/useMutation';
 import { RootState } from '@modules/index';
+import { Marker } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useSWR from 'swr';
 
+
+interface IPlaceResponse {
+    ok: boolean;
+    marker?: Marker;
+}
+
 const PlaceInfo = () => {
 
-    const { focusPosition: { place_name, address_name, x, y, category_name } } = useSelector((state: RootState) => state.map);
+    const { focusPosition: { id, place_name, address_name, x, y, category_name } } = useSelector((state: RootState) => state.map);
 
     const [infoToggle, setInfoToggle] = useState(false);
 
-    const { data, mutate } = useSWR(`/api/markers/markInfo?latitude=${y}&longitude=${x}`);
-    const [toggleMutate] = useMutation("/api/markers/toggleMark");
+    const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
+
+    const [create] = useMutation("/api/markers/create");
+    const [del] = useMutation("/api/markers/delete");
+
 
     const onMarkerStoreClick = () => {
-        toggleMutate({ isStore: data.ok ? true : false, info: data.ok ? data.marker : { latitude: y, longitude: x } });
+        if (data?.ok) {
+            //삭제를 해줘야 한다. 
+            del({ placeId: id });
+        } else {
+
+        }
+        mutate(prev => ({ ...prev, ok: !prev?.ok }), false);
     }
 
     const onInfoToggleClick = () => {
@@ -27,12 +43,8 @@ const PlaceInfo = () => {
         return nameArr[nameArr.length - 1];
     }
 
-    useEffect(() => {
-        console.log(data);
-    }, [data])
 
     return (
-
         place_name ?
             <div className="absolute bottom-20 p-3 z-10 bg-white max-w-lg w-full border-2 border-blue-500">
                 <button onClick={onInfoToggleClick} className="w-full flex justify-center ">

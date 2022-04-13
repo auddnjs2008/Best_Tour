@@ -1,7 +1,7 @@
 
 import client from "@libs/server/client";
 import withHandler from '@libs/server/withHandler';
-import { withIronSessionApiRoute } from 'iron-session/next';
+import { withApiSession } from '@libs/server/withSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(
@@ -36,7 +36,4 @@ async function handler(
 
 }
 
-export default withIronSessionApiRoute(withHandler("POST", handler), {
-    cookieName: "besttoursession",
-    password: process.env.SESSION_KEY!
-});
+export default withApiSession(withHandler("POST", handler))

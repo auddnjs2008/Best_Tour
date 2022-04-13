@@ -22,6 +22,7 @@ model User {
   updatedAt DateTime @updatedAt
   tokens    Token[]
   markers   Marker[]
+  files     File[]
 }
 
 model Token {
@@ -35,11 +36,24 @@ model Token {
 
 model Marker {
   id        Int      @id @default(autoincrement())
+  name      String
+  color     String
+  placeId   String   @unique
   latitude  Float
   longitude Float
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  file      File     @relation(fields: [fileId], references: [name])
+  fileId    String
   imageUrls String
+}
+
+model File {
+  id      Int      @id @default(autoincrement())
+  name    String
+  user    User     @relation(fields: [userId], references: [id])
+  userId  Int
+  markers Marker[]
 }
