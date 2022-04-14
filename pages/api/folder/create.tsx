@@ -5,20 +5,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { imageUrls, fileId, latitude, longitude, id, name, color } = req.body;
+    const { name } = req.body;
 
-    // 마커 생성
-
-    await client.marker.create({
+    await client.file.create({
         data: {
-            placeId: id,
-            latitude: +latitude,
-            longitude: +longitude,
-            user: { connect: { id: (req.session as any).user.id } },
-            imageUrls,
             name,
-            color,
-            file: { connect: { id: fileId } }
+            userId: (req.session as any).user.id
         }
     });
 

@@ -1,10 +1,13 @@
+import { cls } from '@libs/client/utils';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface IImagesWindow {
     images: string[];
+    closeWindow: () => void;
 }
 
-const ImagesWindow = ({ images }: IImagesWindow) => {
+const ImagesWindow = ({ images, closeWindow }: IImagesWindow) => {
 
     const [number, setNumber] = useState(1);
 
@@ -18,31 +21,51 @@ const ImagesWindow = ({ images }: IImagesWindow) => {
         else setNumber(prev => prev - 1);
     }
 
+    const onImageClick = (e: React.MouseEvent<HTMLElement>) => {
+        const target = (e.target as any).closest("li");
+        if (target) {
+            const { dataset: { id } } = target;
+            setNumber(parseInt(id));
+        }
+    }
     useEffect(() => {
         console.log(number);
     }, [number]);
 
     return (
-        <div className="w-full h-full  absolute top-0 left-0 bg-orange-100 ">
-            <div className="flex relative justify-center items-center  w-full h-full overflow-hidden bg-black">
-                <ul className={`flex  -translate-x-[${(number - 1) * 32}rem] `}>
-                    <li className="max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100"></li>
-                    <li className="max-w-lg w-[32rem] h-[300px] flex-shrink-0  bg-green-300"></li>
-                    <li className="max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-blue-300"></li>
-                </ul>
-                <div onClick={onLeftClick} className="absolute top-1/2 left-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        <div className="w-full h-full z-20  absolute top-0 left-0  ">
+            <div className="flex relative justify-center items-center  w-full h-full bg-[rgba(0,0,0,0.9)]">
+                <button onClick={closeWindow} className="absolute top-10 right-10  text-white ">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 " fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
+                </button>
+                <div className="flex relative items-center mb-20 w-[32rem] h-[300px] overflow-hidden bg-yellow-300">
+                    <ul className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
+                        {images.map(image =>
+                            <li className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
+                                <Image src={image} layout="fill" objectFit="contain"></Image>
+                            </li>
+                        )}
+                    </ul>
+                    <div onClick={onLeftClick} className="absolute top-1/2 left-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </div>
+                    <div onClick={onRightClick} className="absolute top-1/2  right-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
                 </div>
-                <div onClick={onRightClick} className="absolute top-1/2  right-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-                <ul className="w-full h-20 p-2 grid  gap-2  grid-flow-col-dense absolute bottom-5 border-2 ">
-                    <li className="w-full h-full bg-white"></li>
-                    <li className="w-full h-full bg-white"></li>
+                <ul onClick={onImageClick} className="select-none w-full h-20 p-2 grid  justify-center gap-10  grid-flow-col absolute bottom-5  ">
+                    {images.map((image, index) =>
+                        <li data-id={index + 1} className={cls("relative w-[70px] h-full bg-white", index + 1 === number ? "border-2 border-blue-400" : "")}>
+                            <Image src={image} layout="fill" />
+                        </li>
+                    )}
+
                 </ul>
             </div>
         </div>

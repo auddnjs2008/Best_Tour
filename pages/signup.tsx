@@ -27,6 +27,7 @@ interface ITokenForm {
 const SignUp: NextPage = () => {
 
     const [mutation, { loading, data, error }] = useMutation<ISignUpResult>("/api/users/signup");
+    const [createFolder] = useMutation("/api/folder/create");
     const [confirmToken, { loading: tokenLoading, data: tokenData, error: tokenError }] = useMutation<ITokenFirmResult>("/api/users/confirm");
     const { handleSubmit, register } = useForm<ILoginForm>();
     const { handleSubmit: tokenSubmit, register: tokenRegister } = useForm<ITokenForm>();
@@ -46,6 +47,7 @@ const SignUp: NextPage = () => {
 
     useEffect(() => {
         if (tokenData?.ok) {
+            createFolder({ name: "기본" });
             router.push("/placeStore");
         }
     }, [tokenData, router])

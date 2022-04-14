@@ -1,8 +1,9 @@
 import useMutation from '@libs/client/useMutation';
 import { RootState } from '@modules/index';
+import { openStoreWindow } from '@modules/markerSlice';
 import { Marker } from '@prisma/client';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useSWR from 'swr';
 
 
@@ -14,12 +15,10 @@ interface IPlaceResponse {
 const PlaceInfo = () => {
 
     const { focusPosition: { id, place_name, address_name, x, y, category_name } } = useSelector((state: RootState) => state.map);
-
+    const dispatch = useDispatch();
     const [infoToggle, setInfoToggle] = useState(false);
 
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
-
-    const [create] = useMutation("/api/markers/create");
     const [del] = useMutation("/api/markers/delete");
 
 
@@ -28,7 +27,7 @@ const PlaceInfo = () => {
             //삭제를 해줘야 한다. 
             del({ placeId: id });
         } else {
-
+            dispatch(openStoreWindow());
         }
         mutate(prev => ({ ...prev, ok: !prev?.ok }), false);
     }
