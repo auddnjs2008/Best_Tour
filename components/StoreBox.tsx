@@ -1,6 +1,7 @@
 import useMutation from '@libs/client/useMutation';
 import { cls } from '@libs/client/utils';
 import { RootState } from '@modules/index';
+import { openImageWindow } from '@modules/LikeSlice';
 import { closeStoreWindow } from '@modules/markerSlice';
 import { Marker } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
@@ -28,9 +29,10 @@ interface IFolder {
 const StoreBox = () => {
 
     const { focusPosition: { y: latitude, x: longitude, place_name, id: place_id } } = useSelector((state: RootState) => state.map);
+    const { imageWindow } = useSelector((state: RootState) => state.like);
     const dispatch = useDispatch();
     const [file, setFile] = useState<IFolder>();
-    const { handleSubmit, register, watch } = useForm<IStoreSubmit>();
+    const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
     const [prephotoWindow, setPrePhotoWindow] = useState(false);
@@ -60,11 +62,9 @@ const StoreBox = () => {
         }
     }
     const onPreviewClick = () => {
-        setPrePhotoWindow(true);
+        dispatch(openImageWindow());
     }
-    const onPreviewClose = () => {
-        setPrePhotoWindow(false);
-    }
+
 
     const getImageId = async (form: FormData, uploadURL: string) => {
         const { result: { id } } = await (await fetch(uploadURL, { method: "POST", body: form })).json()
@@ -74,23 +74,32 @@ const StoreBox = () => {
     const onValid = async ({ name, info, files }: IStoreSubmit) => {
         if (!color) return;
         if (photoPreview && photoPreview.length > 0) {
-            const imageIds = Array.from(photo).map(async item => {
+            let imageStack: any[] = [];
+            for (let i = 0; i < photo.length; i++) {
                 const { uploadURL } = await (await fetch('/api/files')).json();
                 const form = new FormData();
-                form.append("file", item, name);
-                return getImageId(form, uploadURL);
-            })
-            const imageString = imageIds.join(" ");
+                form.append("file", photo[i], name);
+                let result = await (getImageId(form, uploadURL));
+                imageStack.push(result);
+            }
+
+            const imageString = imageStack.join(" ");
             // api로 저장
-            markerSave({ fileId: file!.id, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
+            markerSave({ fileId: file!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
         } else {
-            console.log("이미지 없움");
-            markerSave({ fileId: file!.id, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
+
+            markerSave({ fileId: file!.id, message: info, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
         }
     }
 
     useEffect(() => {
+        //사진 개수 제한 필요
         if (photo && photo.length > 0) {
+            if (photo.length > 6) {
+                alert("사진은 6장 이하까지 가능합니다.");
+                resetField("files");
+                return;
+            }
             const photoArr = Array.from(photo).map((item: Blob) => URL.createObjectURL(item));
             setPhotoPreview(photoArr);
         }
@@ -157,7 +166,7 @@ const StoreBox = () => {
                         <button className="w-full border-2 p-2 border-blue-500 text-blue-500">새 폴더 추가하기</button>
                     </div>}
             </div>
-            {prephotoWindow ? <ImagesWindow images={photoPreview} closeWindow={onPreviewClose} /> : null}
+            {imageWindow ? <ImagesWindow images={photoPreview} /> : null}
         </>
     )
 }

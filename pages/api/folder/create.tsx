@@ -5,12 +5,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { name } = req.body;
+    const { name, info } = req.body;
 
     await client.file.create({
         data: {
             name,
-            userId: (req.session as any).user.id
+            userId: (req.session as any).user.id,
+            info
         }
     });
 
