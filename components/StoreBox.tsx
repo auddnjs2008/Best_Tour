@@ -2,8 +2,8 @@ import useMutation from '@libs/client/useMutation';
 import { cls } from '@libs/client/utils';
 import { RootState } from '@modules/index';
 import { openImageWindow } from '@modules/LikeSlice';
-import { closeStoreWindow } from '@modules/markerSlice';
-import { Marker } from '@prisma/client';
+import { closeStoreWindow, selectFile } from '@modules/markerSlice';
+import { File, Marker } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,17 +25,17 @@ interface IFolder {
     markers: Marker[];
 }
 
-
 const StoreBox = () => {
 
     const { focusPosition: { y: latitude, x: longitude, place_name, id: place_id } } = useSelector((state: RootState) => state.map);
+    const { selectFileInfo } = useSelector((state: RootState) => state.marker);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const dispatch = useDispatch();
     const [file, setFile] = useState<IFolder>();
     const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
-    const [prephotoWindow, setPrePhotoWindow] = useState(false);
+
     const photo = watch("files");
 
     const [markerSave, { data, loading, error }] = useMutation("/api/markers/create");
@@ -50,7 +50,7 @@ const StoreBox = () => {
         if (target) {
             const { dataset: { id } } = target;
             const file = folderData.folders[parseInt(id)];
-            setFile(file);
+            dispatch(selectFile(file));
         }
     }
 
@@ -114,15 +114,15 @@ const StoreBox = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                {file ?
+                {selectFileInfo ?
                     <div className="">
                         <div className="flex items-center p-3 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
                             </svg>
                             <div className="ml-5">
-                                <h1 className="text-base">{file.name}</h1>
-                                <h5 className="text-xs">개수 {file.markers.length}</h5>
+                                <h1 className="text-base">{selectFileInfo.name}</h1>
+                                <h5 className="text-xs">개수 {selectFileInfo.markers.length}</h5>
                             </div>
                         </div>
                         <form onSubmit={handleSubmit(onValid)} className="flex flex-col">
