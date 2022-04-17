@@ -14,7 +14,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             markers: true
         }
     });
-    console.log(folders);
+
     return res.json({ ok: true, folders });
 
 }

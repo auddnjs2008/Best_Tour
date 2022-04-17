@@ -34,9 +34,7 @@ const ImagesWindow = ({ images }: IImagesWindow) => {
             setNumber(parseInt(id));
         }
     }
-    useEffect(() => {
-        console.log(number);
-    }, [number]);
+
 
     return (
         <div className="w-full h-full z-20  absolute top-0 left-0  ">

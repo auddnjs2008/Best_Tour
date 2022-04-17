@@ -106,7 +106,7 @@ const PlaceInfo = () => {
                         : null}
 
                 </div >
-                {imageWindow ? <ImagesWindow images={makeImageUrls(data?.marker?.imageUrls!)} /> : null}
+                {data?.marker?.imageUrls && imageWindow ? <ImagesWindow images={makeImageUrls(data?.marker?.imageUrls!)} /> : null}
             </> : null
     )
 }

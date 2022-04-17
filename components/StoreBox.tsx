@@ -27,11 +27,10 @@ interface IFolder {
 
 const StoreBox = () => {
 
-    const { focusPosition: { y: latitude, x: longitude, place_name, id: place_id } } = useSelector((state: RootState) => state.map);
+    const { focusPosition: { y: latitude, x: longitude, place_name, id: place_id, message, imageUrls, color: initColor } } = useSelector((state: RootState) => state.map);
     const { selectFileInfo } = useSelector((state: RootState) => state.marker);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const dispatch = useDispatch();
-    const [file, setFile] = useState<IFolder>();
     const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
@@ -40,6 +39,8 @@ const StoreBox = () => {
 
     const [markerSave, { data, loading, error }] = useMutation("/api/markers/create");
     const { data: folderData, mutate } = useSWR("/api/folder/foldersInfo");
+
+    const [deletePhotos] = useMutation("/api/delImages");
 
     const onCloseClick = () => {
         dispatch(closeStoreWindow());
@@ -71,8 +72,27 @@ const StoreBox = () => {
         return id;
     }
 
+    const delImages = async () => {
+
+        const imageIds = imageUrls.split(" ");
+        const result = await deletePhotos({ imageIds });
+        console.log(result);
+        return result;
+    }
+
     const onValid = async ({ name, info, files }: IStoreSubmit) => {
         if (!color) return;
+        console.log("제출했습니다.");
+        // 만일 photoPreview 에 blob이 포함되어 있지 않으면 먼저 다 삭제를 해주고 다시 업로드
+        if (imageUrls && photoPreview.join(" ").includes("blob")) {
+            console.log("삭제 구간에 들어왔습니다.");
+            let result = await delImages();
+            console.log(result);
+            return;
+            // if (!(result as any).ok) return;
+        }
+
+
         if (photoPreview && photoPreview.length > 0) {
             let imageStack: any[] = [];
             for (let i = 0; i < photo.length; i++) {
@@ -85,16 +105,17 @@ const StoreBox = () => {
 
             const imageString = imageStack.join(" ");
             // api로 저장
-            markerSave({ fileId: file!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
+            markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
         } else {
 
-            markerSave({ fileId: file!.id, message: info, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
+            markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
         }
     }
 
     useEffect(() => {
         //사진 개수 제한 필요
         if (photo && photo.length > 0) {
+
             if (photo.length > 6) {
                 alert("사진은 6장 이하까지 가능합니다.");
                 resetField("files");
@@ -104,6 +125,19 @@ const StoreBox = () => {
             setPhotoPreview(photoArr);
         }
     }, [photo])
+
+
+
+    useEffect(() => {
+        if (imageUrls) {
+
+            const fixedUrls = imageUrls.split(" ").map((url: string) => `https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${url}/public`)
+            setPhotoPreview(fixedUrls);
+        }
+        if (initColor) {
+            setColor(initColor);
+        }
+    }, [imageUrls, initColor]);
 
 
     return (
@@ -127,13 +161,16 @@ const StoreBox = () => {
                         </div>
                         <form onSubmit={handleSubmit(onValid)} className="flex flex-col">
                             <input {...register("name", { required: true, value: place_name })} value={place_name} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="이름" />
-                            <input {...register("info", { required: true })} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="설명을 입력해 주세요." />
+                            <input {...register("info", { required: true })} value={message} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="설명을 입력해 주세요." />
                             <label className=" text-black bg-yellow-400 mb-7 p-2">
                                 이미지를 올려주세요
                                 <input {...register("files")} className="hidden" type="file" accept="image/*" multiple={true} />
                             </label>
                             {photoPreview.length > 0 ?
-                                <button onClick={onPreviewClick} className="ring-yellow-400 ring-2 p-3 mb-10"> 이미지 미리보기</button> : null}
+                                <button onClick={onPreviewClick} className="ring-yellow-400 ring-2 p-3 mb-10"> 이미지 미리보기</button>
+                                :
+                                null
+                            }
                             <ul onClick={onColorClick} className="flex space-x-2 mb-20">
                                 <li data-id="#FF3D00" className={cls("rounded-full w-7 h-7 bg-[#FF3D00]", color === "#FF3D00" ? "ring-[#FF3D00] ring-2 border-2 border-white" : "")}></li>
                                 <li data-id="#E67E33" className={cls("rounded-full w-7 h-7 bg-[#E67E33]", color === "#E67E33" ? "ring-[#E67E33] ring-2 border-2 border-white" : "")}></li>

@@ -11,6 +11,12 @@ interface FileWithMarker extends File {
     markers: Marker[]
 }
 
+interface FixMarkInfo {
+    message: null | string;
+    imageUrls: null | string;
+    color: null | string;
+}
+
 interface IFolderInfoWindow {
     folderInfo: FileWithMarker;
     setFolderInfo: React.Dispatch<React.SetStateAction<FileWithMarker | null>>;
@@ -24,11 +30,15 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
     const [delMutate] = useMutation("/api/markers/delete");
 
 
-    const getPlaceInfo = (name: string) => {
+    const getPlaceInfo = (name: string, semiInfo: FixMarkInfo | null = null) => {
         const places = new window.kakao.maps.services.Places();
         const callback = function (result: any, status: any) {
             if (status === window.kakao.maps.services.Status.OK) {
-                dispatch(focusMap(result[0]));
+                if (semiInfo) {
+                    dispatch(focusMap({ ...result[0], message: semiInfo.message, imageUrls: semiInfo.imageUrls, color: semiInfo.color }));
+                } else {
+                    dispatch(focusMap({ ...result[0] }));
+                }
             }
         }
         places.keywordSearch(name, callback);
@@ -46,7 +56,9 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
 
     const fixMarker = (index: number) => {
         let marker = { ...folderInfo.markers[index] };
-        //storeBox 와 관련해서 데잍 ㅓ수정해줘야 함   
+        //storeBox 와 관련해서 데이터 수정해줘야 함  focusMap 필요
+        //x:longitude , y:latitude, place_name, id 
+        getPlaceInfo(marker.name, { message: marker.message, imageUrls: marker.imageUrls, color: marker.color });
         dispatch(selectFile(folderInfo));
         dispatch(openStoreWindow());
         dispatch(closeWindow());
@@ -66,7 +78,7 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
         }
 
         if (fixBtn) {
-            console.log("수정");
+
             fixMarker(parseInt(id));
             return;
         }

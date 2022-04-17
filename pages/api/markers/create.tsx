@@ -9,6 +9,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // 마커 생성
 
+
+
+
     const newMarker = await client.marker.create({
         data: {
             placeId: id,
