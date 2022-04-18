@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import ImagesWindow from './ImagesWindow';
 
 
-interface IPlaceResponse {
+export interface IPlaceResponse {
     ok: boolean;
     marker?: Marker;
 }
@@ -23,7 +23,7 @@ const PlaceInfo = () => {
     const [infoToggle, setInfoToggle] = useState(false);
 
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
-    console.log(data);
+
     const [del] = useMutation("/api/markers/delete");
 
 
@@ -56,6 +56,13 @@ const PlaceInfo = () => {
         const nameArr = name.split("> ");
         return nameArr[nameArr.length - 1];
     }
+
+    useEffect(() => {
+        if (infoToggle === true) {
+            mutate();
+        }
+    }, [infoToggle])
+
 
 
     return (

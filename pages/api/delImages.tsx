@@ -24,13 +24,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             fetchArr.push(fetchReq);
         }
 
-        const allReq = Promise.all(fetchArr);
+        const allReq = (await Promise.all(fetchArr)).map(item => item.success);
 
-        allReq.then(res => console.log(res));
+        if (allReq.includes(false)) return res.json({ ok: false });
 
         return res.json({
             ok: true
-        })
+        });
     } catch (e) {
         return res.json({ ok: false, error: e })
     }

@@ -1,7 +1,7 @@
 import useMutation from '@libs/client/useMutation';
 import { cls } from '@libs/client/utils';
 import { RootState } from '@modules/index';
-import { openImageWindow } from '@modules/LikeSlice';
+import { openImageWindow, toggleWindow } from '@modules/LikeSlice';
 import { closeStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +9,8 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import useSWR from 'swr';
 import ImagesWindow from './ImagesWindow';
+import { IPlaceResponse } from './PlaceInfo';
+
 
 
 
@@ -34,11 +36,13 @@ const StoreBox = () => {
     const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
+    const [imageLoad, setImageLoad] = useState(false);
 
     const photo = watch("files");
 
     const [markerSave, { data, loading, error }] = useMutation("/api/markers/create");
     const { data: folderData, mutate } = useSWR("/api/folder/foldersInfo");
+    const { data: markerData, mutate: markerMutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${place_id}`);
 
     const [deletePhotos] = useMutation("/api/delImages");
 
@@ -67,57 +71,61 @@ const StoreBox = () => {
     }
 
 
-    const getImageId = async (form: FormData, uploadURL: string) => {
-        const { result: { id } } = await (await fetch(uploadURL, { method: "POST", body: form })).json()
-        return id;
+    const getImageId = (form: FormData, uploadURL: string) => {
+        return fetch(uploadURL, { method: "POST", body: form }).then(res => res.json());
     }
 
     const delImages = async () => {
 
         const imageIds = imageUrls.split(" ");
-        const result = await deletePhotos({ imageIds });
-        console.log(result);
-        return result;
+        deletePhotos({ imageIds });
+
     }
 
     const onValid = async ({ name, info, files }: IStoreSubmit) => {
-        if (!color) return;
-        console.log("제출했습니다.");
+        if (!color || loading || imageLoad) return;
         // 만일 photoPreview 에 blob이 포함되어 있지 않으면 먼저 다 삭제를 해주고 다시 업로드
-        if (imageUrls && photoPreview.join(" ").includes("blob")) {
-            console.log("삭제 구간에 들어왔습니다.");
-            let result = await delImages();
-            console.log(result);
-            return;
-            // if (!(result as any).ok) return;
+        if (imageUrls && photoPreview[0].includes("blob")) {
+            await delImages();
         }
 
-
         if (photoPreview && photoPreview.length > 0) {
-            let imageStack: any[] = [];
+            setImageLoad(true);
+            let fetchArr: any[] = [];
             for (let i = 0; i < photo.length; i++) {
-                const { uploadURL } = await (await fetch('/api/files')).json();
+                const fetchItem = fetch('/api/files').then(res => res.json());
+                fetchArr.push(fetchItem);
+            }
+            const datas = await Promise.all(fetchArr);
+            const idFetches: any[] = [];
+            datas.forEach((data, i) => {
                 const form = new FormData();
                 form.append("file", photo[i], name);
-                let result = await (getImageId(form, uploadURL));
-                imageStack.push(result);
-            }
+                idFetches.push(getImageId(form, data.uploadURL));
+            })
 
-            const imageString = imageStack.join(" ");
+            const imageString = (await Promise.all(idFetches)).map(item => item.result.id).join(" ");
+            setImageLoad(false);
             // api로 저장
             markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
         } else {
 
             markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
         }
+        markerMutate();
+        dispatch(closeStoreWindow());
+
+
     }
+
+
 
     useEffect(() => {
         //사진 개수 제한 필요
         if (photo && photo.length > 0) {
 
-            if (photo.length > 6) {
-                alert("사진은 6장 이하까지 가능합니다.");
+            if (photo.length > 4) {
+                alert("사진은 4장 이하까지 가능합니다.");
                 resetField("files");
                 return;
             }
@@ -130,7 +138,6 @@ const StoreBox = () => {
 
     useEffect(() => {
         if (imageUrls) {
-
             const fixedUrls = imageUrls.split(" ").map((url: string) => `https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${url}/public`)
             setPhotoPreview(fixedUrls);
         }
@@ -138,6 +145,7 @@ const StoreBox = () => {
             setColor(initColor);
         }
     }, [imageUrls, initColor]);
+
 
 
     return (
@@ -167,7 +175,7 @@ const StoreBox = () => {
                                 <input {...register("files")} className="hidden" type="file" accept="image/*" multiple={true} />
                             </label>
                             {photoPreview.length > 0 ?
-                                <button onClick={onPreviewClick} className="ring-yellow-400 ring-2 p-3 mb-10"> 이미지 미리보기</button>
+                                <button type="button" onClick={onPreviewClick} className="ring-yellow-400 ring-2 p-3 mb-10"> 이미지 미리보기</button>
                                 :
                                 null
                             }
@@ -181,7 +189,7 @@ const StoreBox = () => {
                                 <li data-id="#9B59B6" className={cls("rounded-full w-7 h-7 bg-[#9B59B6]", color === "#9B59B6" ? "ring-[#9B59B6] ring-2 border-2 border-white" : "")}></li>
                                 <li data-id="#000000" className={cls("rounded-full w-7 h-7 bg-[#000000]", color === "#000000" ? "ring-[#000000] ring-2 border-2 border-white" : "")}></li>
                             </ul>
-                            <button className=" bg-blue-400 p-2 text-white">완료</button>
+                            <button className=" bg-blue-400 p-2 text-white">{imageLoad || loading ? "loading..." : "완료"}</button>
                         </form>
                     </div>
                     : <div>
