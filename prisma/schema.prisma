@@ -13,16 +13,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  avatar    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tokens    Token[]
-  markers   Marker[]
-  files     File[]
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String
+  name         String
+  avatar       String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  tokens       Token[]
+  markers      Marker[]
+  files        File[]
+  recentSearch RecentSearch[]
 }
 
 model Token {
@@ -58,4 +59,18 @@ model File {
   userId  Int
   markers Marker[]
   info    String
+}
+
+model RecentSearch {
+
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  name      String
+  latitude  Float
+  longitude Float
+  placeId   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }

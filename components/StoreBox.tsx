@@ -1,7 +1,7 @@
 import useMutation from '@libs/client/useMutation';
 import { cls } from '@libs/client/utils';
 import { RootState } from '@modules/index';
-import { openImageWindow, toggleWindow } from '@modules/LikeSlice';
+import { openImageWindow, toggleWindow } from '@modules/LikeSlice'
 import { closeStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
 import React, { useEffect, useState } from 'react';

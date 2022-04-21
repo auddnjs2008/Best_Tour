@@ -19,6 +19,7 @@ const PlaceInfo = () => {
 
     const { focusPosition: { id, place_name, address_name, x, y, category_name } } = useSelector((state: RootState) => state.map);
     const { imageWindow } = useSelector((state: RootState) => state.like);
+    const { storeWindow } = useSelector((state: RootState) => state.marker);
     const dispatch = useDispatch();
     const [infoToggle, setInfoToggle] = useState(false);
 
@@ -58,10 +59,10 @@ const PlaceInfo = () => {
     }
 
     useEffect(() => {
-        if (infoToggle === true) {
+        if (storeWindow === false) {
             mutate();
         }
-    }, [infoToggle])
+    }, [storeWindow])
 
 
 

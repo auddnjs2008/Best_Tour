@@ -1,10 +1,34 @@
 import useMap from '@libs/client/useMap';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '@modules/index';
 import { focusMap } from "@modules/mapSlice";
+import useSWR from 'swr';
+import { Marker } from '@prisma/client';
 
 
+
+
+interface IallMarkResult {
+    ok: boolean;
+    markers: Marker[]
+}
+
+interface ImarkerColor {
+    [index: string]: string
+}
+
+const markerColor: ImarkerColor = {
+    "#FF3D00": "빨강",
+    "#E67E33": "주황",
+    "#F1C40F": "노랑",
+    "#2ECC71": "초록",
+    "#1ABC9C": "청록",
+    "#3498DB": "파랑",
+    "#9B59B6": "보라",
+    "#000000": "검정"
+
+}
 
 
 const KakaoMap = () => {
@@ -13,18 +37,20 @@ const KakaoMap = () => {
     const [map, setMap] = useState(null);
     const centerMarker = useRef<any>(null);
 
+    const { data: markerData } = useSWR<IallMarkResult>("/api/markers/allMark");
+
     const data = [[33.450701, 126.570667], [33.450701, 126.550667]];
     const mapLoaded = useMap();
 
-    const makeMarker = (lat: number, long: number, map: any) => {
+    const makeMarker = (lat: number, long: number, map: any, color: string) => {
         const marker = new window.kakao.maps.Marker({
             map,
             position: new window.kakao.maps.LatLng(lat, long)
         })
 
         const markerImage = new window.kakao.maps.MarkerImage(
-            'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-            new window.kakao.maps.Size(31, 35), new window.kakao.maps.Point(13, 34)
+            `/marker/${markerColor[color]}.png`,
+            new window.kakao.maps.Size(20, 20), new window.kakao.maps.Point(13, 34)
         );
         marker.setImage(markerImage);
     }
@@ -45,7 +71,7 @@ const KakaoMap = () => {
                 const map = new window.kakao.maps.Map(container, options);
                 centerMarker.current = new window.kakao.maps.Marker({ map });
                 setMap(map);
-                data.forEach(([lat, long]) => makeMarker(lat, long, map));
+                markerData?.markers.forEach(({ latitude, longitude, color }) => makeMarker(latitude, longitude, map, color));
             })
         });
 
@@ -64,6 +90,7 @@ const KakaoMap = () => {
 
 
     return <div className="mx-auto mt-5" id="map" style={{ width: "500px", height: "400px" }}></div>
+
 }
 
 export default KakaoMap;
