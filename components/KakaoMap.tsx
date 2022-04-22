@@ -1,10 +1,11 @@
 import useMap from '@libs/client/useMap';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@modules/index';
 import { focusMap } from "@modules/mapSlice";
 import useSWR from 'swr';
 import { Marker } from '@prisma/client';
+import kakaoSearch from '@libs/client/kakaoSearch';
 
 
 
@@ -36,13 +37,11 @@ const KakaoMap = () => {
     const { focusPosition: { x, y } } = useSelector((state: RootState) => state.map);
     const [map, setMap] = useState(null);
     const centerMarker = useRef<any>(null);
-
+    const dispatch = useDispatch();
     const { data: markerData } = useSWR<IallMarkResult>("/api/markers/allMark");
-
-    const data = [[33.450701, 126.570667], [33.450701, 126.550667]];
     const mapLoaded = useMap();
 
-    const makeMarker = (lat: number, long: number, map: any, color: string) => {
+    const makeMarker = ({ latitude: lat, longitude: long, color, name, placeId }: Marker, map: any) => {
         const marker = new window.kakao.maps.Marker({
             map,
             position: new window.kakao.maps.LatLng(lat, long)
@@ -50,9 +49,14 @@ const KakaoMap = () => {
 
         const markerImage = new window.kakao.maps.MarkerImage(
             `/marker/${markerColor[color]}.png`,
-            new window.kakao.maps.Size(20, 20), new window.kakao.maps.Point(13, 34)
+            new window.kakao.maps.Size(25, 25), new window.kakao.maps.Point(13, 34)
         );
+        window.kakao.maps.event.addListener(marker, "click", () => {
+
+            kakaoSearch(name, placeId, dispatch);
+        })
         marker.setImage(markerImage);
+
     }
 
 
@@ -71,7 +75,7 @@ const KakaoMap = () => {
                 const map = new window.kakao.maps.Map(container, options);
                 centerMarker.current = new window.kakao.maps.Marker({ map });
                 setMap(map);
-                markerData?.markers.forEach(({ latitude, longitude, color }) => makeMarker(latitude, longitude, map, color));
+                markerData?.markers.forEach((marker) => makeMarker(marker, map));
             })
         });
 
@@ -80,9 +84,10 @@ const KakaoMap = () => {
     useEffect(() => {
 
         if (map) {
-            (map as any).panTo(new window.kakao.maps.LatLng(y, x));
+            const position = new window.kakao.maps.LatLng(y, x);
+            (map as any).setCenter(position);
             (map as any).setLevel(3);
-            centerMarker.current.setPosition(new window.kakao.maps.LatLng(y, x));
+            centerMarker.current.setPosition(position);
         }
     }, [x, y])
 

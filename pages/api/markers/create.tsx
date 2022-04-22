@@ -30,6 +30,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             message,
             file: { connect: { id: fileId } }
         }
+    });
+
+    await client.recentSearch.update({
+        where: {
+            id: id
+        },
+        data: {
+            isMarker: true
+        }
     })
 
 

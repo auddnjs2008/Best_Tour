@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { name, latitude, longitude, placeId } = req.body;
+    const searchInfo = req.body;
 
     try {
         const searches = await client.recentSearch.findMany({
@@ -14,30 +14,35 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             }
         });
 
-        const isExist = searches.findIndex(search => search.placeId === placeId);
+        const isExist = searches.findIndex(search => search.id === searchInfo.id);
         if (isExist !== -1) return res.status(200).end();
 
         if (searches.length >= 10) {
             await client.recentSearch.delete({
                 where: {
-                    placeId: searches[0].placeId
+                    id: searches[0].id
                 }
             })
         }
 
+        const isMarker = await client.marker.findUnique({
+            where: {
+                placeId: searchInfo.id
+            }
+        });
+
+
         await client.recentSearch.create({
             data: {
                 userId: (req.session as any).user.id,
-                name,
-                latitude: +latitude,
-                longitude: +longitude,
-                placeId
+                ...searchInfo,
+                isMarker: isMarker ? true : false
             }
         });
 
         return res.json({ ok: true });
     } catch (e) {
-
+        console.log(e);
         return res.json({ ok: false, error: `${e}` });
     }
 

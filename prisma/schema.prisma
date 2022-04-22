@@ -63,14 +63,22 @@ model File {
 
 model RecentSearch {
 
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  name      String
-  latitude  Float
-  longitude Float
-  placeId   String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String   @id
+  user                User     @relation(fields: [userId], references: [id])
+  userId              Int
+  address_name        String
+  category_group_code String
+  category_group_name String
+  category_name       String
+  distance            String
+  phone               String
+  place_name          String
+  place_url           String
+  road_address_name   String
+  y                   String
+  x                   String
+  isMarker            Boolean
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
 }

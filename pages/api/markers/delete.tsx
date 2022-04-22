@@ -13,6 +13,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         }
     })
 
+    await client.recentSearch.update({
+        where: {
+            id: placeId
+        },
+        data: {
+            isMarker: false
+        }
+    })
+
     res.status(200).end();
 
 }
