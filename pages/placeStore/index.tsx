@@ -2,6 +2,7 @@
 import KakaoMap from '@components/KakaoMap';
 import Layout from '@components/Layout';
 import PlaceInfo from '@components/PlaceInfo';
+import MarkerController from '@components/MarkerController';
 import Search from '@components/Search/Search';
 import StoreBox from '@components/StoreBox';
 import { RootState } from '@modules/index';

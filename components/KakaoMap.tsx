@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@modules/index';
 import { focusMap } from "@modules/mapSlice";
 import useSWR from 'swr';
-import { Marker } from '@prisma/client';
+import { File, Marker } from '@prisma/client';
 import kakaoSearch from '@libs/client/kakaoSearch';
-
-
+import MarkerController from './MarkerController';
 
 
 interface IallMarkResult {
@@ -39,6 +38,8 @@ const KakaoMap = () => {
     const centerMarker = useRef<any>(null);
     const dispatch = useDispatch();
     const { data: markerData } = useSWR<IallMarkResult>("/api/markers/allMark");
+    const [selectMarkers, setSelectMarkers] = useState(markerData?.markers);
+
     const mapLoaded = useMap();
 
     const makeMarker = ({ latitude: lat, longitude: long, color, name, placeId }: Marker, map: any) => {
@@ -52,7 +53,6 @@ const KakaoMap = () => {
             new window.kakao.maps.Size(25, 25), new window.kakao.maps.Point(13, 34)
         );
         window.kakao.maps.event.addListener(marker, "click", () => {
-
             kakaoSearch(name, placeId, dispatch);
         })
         marker.setImage(markerImage);
@@ -66,35 +66,42 @@ const KakaoMap = () => {
         window.kakao.maps.load(() => {
             const container = document.getElementById("map");
             navigator.geolocation.getCurrentPosition((position) => {
+
                 const { coords: { latitude, longitude } } = position;
 
                 const options = {
                     center: new window.kakao.maps.LatLng(latitude, longitude),
-                    level: 5
+                    level: 20
                 }
                 const map = new window.kakao.maps.Map(container, options);
                 centerMarker.current = new window.kakao.maps.Marker({ map });
                 setMap(map);
-                markerData?.markers.forEach((marker) => makeMarker(marker, map));
+
+                selectMarkers?.forEach((marker) => makeMarker(marker, map));
             })
         });
 
-    }, [mapLoaded]);
+    }, [mapLoaded, selectMarkers]);
 
     useEffect(() => {
 
         if (map) {
-            const position = new window.kakao.maps.LatLng(y, x);
+
+            const position = new window.kakao.maps.LatLng(parseFloat(y), parseFloat(x));
             (map as any).setCenter(position);
             (map as any).setLevel(3);
             centerMarker.current.setPosition(position);
         }
     }, [x, y])
 
+    useEffect(() => {
+        setSelectMarkers(markerData?.markers)
+    }, [markerData])
 
 
-
-    return <div className="mx-auto mt-5" id="map" style={{ width: "500px", height: "400px" }}></div>
+    return <div className="mx-auto mt-5" id="map" style={{ width: "500px", height: "400px" }}>
+        <MarkerController markers={markerData ? markerData.markers : []} setSelectMarkers={setSelectMarkers} />
+    </div>
 
 }
 

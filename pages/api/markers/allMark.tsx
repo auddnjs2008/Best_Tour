@@ -8,6 +8,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const markers = await client.marker.findMany({
         where: {
             userId: (req.session as any).user.id,
+        },
+        include: {
+            file: true,
         }
     })
 

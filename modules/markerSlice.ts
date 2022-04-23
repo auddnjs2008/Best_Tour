@@ -8,11 +8,13 @@ interface FileWithMarkers extends File {
 export interface MarkerState {
   storeWindow: boolean;
   selectFileInfo: FileWithMarkers | null;
+  filterMarkersInfo: Marker[] | null;
 }
 
 const initialState: MarkerState = {
   storeWindow: false,
   selectFileInfo: null,
+  filterMarkersInfo: null,
 };
 
 export const markerSlice = createSlice({
@@ -28,9 +30,16 @@ export const markerSlice = createSlice({
     selectFile: (state, action: PayloadAction<FileWithMarkers>) => {
       state.selectFileInfo = action.payload;
     },
+    setfilterMarkers: (state, action: PayloadAction<Marker[]>) => {
+      state.filterMarkersInfo = action.payload;
+    },
   },
 });
 
-export const { openStoreWindow, closeStoreWindow, selectFile } =
-  markerSlice.actions;
+export const {
+  openStoreWindow,
+  closeStoreWindow,
+  selectFile,
+  setfilterMarkers,
+} = markerSlice.actions;
 export default markerSlice.reducer;
