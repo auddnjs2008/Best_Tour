@@ -54,7 +54,7 @@ const LikeWindow = () => {
 
     return (
         <>
-            <div className={cls("absolute w-full max-w-lg  bottom-16 z-20 space-y-2 bg-white border-2 border-blue-500 p-3", spread ? "h-[78%]" : "")}>
+            <div className={cls("fixed w-full max-w-lg  bottom-16 z-20 space-y-2 bg-white border-2 border-blue-500 p-3", spread ? "h-[78%]" : "")}>
                 <button onClick={onSpreadToggleClick} className="w-full flex justify-center align-middle">
                     {spread ?
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
