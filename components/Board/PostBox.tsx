@@ -1,10 +1,23 @@
-import Post from './Post';
+import { Post, User } from '@prisma/client';
+import useSWR from 'swr';
+import PostItem from './Post';
+
+export interface PostWithUser extends Post {
+    user: User;
+}
+
+interface IPostResponse {
+    ok: boolean;
+    posts: PostWithUser[]
+}
 
 const PostBox = () => {
 
+    const { data } = useSWR<IPostResponse>("/api/post/allPost");
+
     return (
         <ul className="mt-16">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => <Post></Post>)}
+            {data?.posts.map((item: PostWithUser) => <PostItem postInfo={item}></PostItem>)}
         </ul>
     )
 }

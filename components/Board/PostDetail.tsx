@@ -1,30 +1,43 @@
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useState } from "react";
+import useSWR from 'swr';
+import { PostWithUser } from './PostBox';
+
+
+interface IPostResponse {
+    ok: boolean;
+    post: PostWithUser;
+}
 
 const PostDetail = () => {
 
     const [number, setNumber] = useState(1);
+    const router = useRouter();
+    const { data } = useSWR<IPostResponse>(`/api/post/postInfo?id=${router.query.id ? router.query.id : ""}`);
+
 
     const onRightClick = () => {
-        if (number === [1, 2, 3].length) setNumber(1);
+        if (number === data?.post.imageUrls.split(" ").length) setNumber(1);
         else setNumber(prev => prev + 1);
     }
 
     const onLeftClick = () => {
-        if (number === 1) setNumber([1, 2, 3].length);
+        if (number === 1) setNumber(data?.post.imageUrls ? data?.post.imageUrls.split(" ").length : 1);
         else setNumber(prev => prev - 1);
     }
 
     return (
         <div className="mt-16 pb-20 ">
             <div className="mb-14 text-center">
-                <h1 className="mb-5 text-xl font-semibold text-blue-400">안동주</h1>
-                <div>경기도 안산시 단원구 고잔동 524-3</div>
+                <h1 className="mb-5 text-xl font-semibold text-blue-400">{data?.post.placeName}</h1>
+                <div>{data?.post.address}</div>
             </div>
             <div className="flex relative items-center mb-10 w-[32rem] h-[300px] overflow-hidden ">
                 <ul style={{ transform: `translateX(${-1 * (number - 1) * 512}px)` }} className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
-                    {[1, 2, 3].map(image =>
+                    {data?.post.imageUrls.split(" ").map(image =>
                         <li className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
-                            {/* <Image src={image} layout="fill" objectFit="contain"></Image> */}
+                            <Image src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${image}/public`} layout="fill" objectFit="contain"></Image>
                             <div className="w-full h-full bg-gray-400"></div>
                         </li>
                     )}
@@ -42,11 +55,7 @@ const PostDetail = () => {
                 </div>
             </div>
             <p className="p-2 leading-7 select-none ">
-                여기는 정말 술 먹기 딱 좋은 안주집입니다. 꼭 오셔야 하구요 여자친구랑 데이트하러 꼭 필수 코스 입니다.
-                저는 여기서 밤새 술을 마셨습니다. 안주는 문어찜이 최고입니다. 정말 말이 필요없습니다.
-                그래서 사실 저는 밤샐 겁니다. 하루종일 여기서도 저기서도 저기서도 그래서도 아닙니다. 꼬꼮꼬꼬꼬
-                꼬고 닭ㅊ 치킨이 먹고 싶은 밤입니다. 하루종일 여기서 꼬꼬딹 먹고싶어요 ㅗㄲ꼬꼬꼬꼬꼮꼬꼬
-                꼬꼬꼬꼬꼬 꼬꼬딹 달다거리ㅏ 머니알 ㅓㅣ마ㅓㄴㅇ리ㅏ
+                {data?.post.Message}
             </p>
         </div>
     )

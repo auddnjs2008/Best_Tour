@@ -6,13 +6,18 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
     const placeInfo = req.body;
-
-    await client.post.create({
-        data: {
-            userId: (req.session as any).user.id,
-            ...placeInfo
-        }
-    })
+    try {
+        const newPost = await client.post.create({
+            data: {
+                user: { connect: { id: (req.session as any).user.id } },
+                ...placeInfo
+            }
+        })
+        res.json({ ok: true, newPost });
+    } catch (e) {
+        console.log(e);
+        res.json({ ok: false, error: e })
+    }
 
 
 }
