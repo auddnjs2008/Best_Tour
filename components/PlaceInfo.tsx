@@ -1,3 +1,4 @@
+import useKaKaoMessage from '@libs/client/useKakaoMessage';
 import useMutation from '@libs/client/useMutation';
 import { RootState } from '@modules/index';
 import { openImageWindow } from '@modules/LikeSlice';
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useSWR from 'swr';
 import ImagesWindow from './ImagesWindow';
+import KakaoRoadView from './KaKaoRoadView';
 
 
 export interface IPlaceResponse {
@@ -22,10 +24,14 @@ const PlaceInfo = () => {
     const { storeWindow } = useSelector((state: RootState) => state.marker);
     const dispatch = useDispatch();
     const [infoToggle, setInfoToggle] = useState(false);
+    const [roadview, setRoadview] = useState(false);
 
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
 
     const [del] = useMutation("/api/markers/delete");
+
+    const messageLoaded = useKaKaoMessage();
+
 
 
     const makeImageUrls = (urlString: string) => {
@@ -52,6 +58,37 @@ const PlaceInfo = () => {
         setInfoToggle(prev => !prev);
     }
 
+    const onRoadviewClick = () => {
+        setRoadview(true);
+    }
+
+    const onShareClick = () => {
+        window.Kakao.Link.sendDefault({
+            objectType: 'location',
+            address: address_name,
+            addressTitle: place_name,
+            content: {
+                title: place_name,
+                description: '이 장소를 추천합니다.',
+                imageUrl:
+                    "https://usecloud.s3-ap-northeast-1.amazonaws.com/kakaoMapIcon/%EA%B4%80%EA%B4%91%EC%A7%80.png",
+                link: {
+                    mobileWebUrl: 'https://localhost:3000',
+                    webUrl: 'https://localhost:3000',
+                },
+            },
+            buttons: [
+                {
+                    title: '웹으로 보기',
+                    link: {
+                        mobileWebUrl: 'https://localhost:3000',
+                        webUrl: 'https://localhost:3000',
+                    },
+                },
+            ],
+        });
+    }
+
 
     const getCategory = (name: string) => {
         const nameArr = name.split("> ");
@@ -64,6 +101,11 @@ const PlaceInfo = () => {
         }
     }, [storeWindow])
 
+    useEffect(() => {
+        if (!messageLoaded) return;
+        window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_MAP_KEY);
+
+    }, [messageLoaded])
 
 
     return (
@@ -86,12 +128,12 @@ const PlaceInfo = () => {
                     </div>
                     <div className="text-sm">{address_name}</div>
                     <ul className="flex p-3 border-2  mt-3  justify-around">
-                        <li className="cursor-pointer">
+                        <li onClick={onRoadviewClick} className="cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </li>
-                        <li className="cursor-pointer">
+                        <li onClick={onShareClick} className="cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
@@ -115,6 +157,7 @@ const PlaceInfo = () => {
 
                 </div >
                 {data?.marker?.imageUrls && imageWindow ? <ImagesWindow images={makeImageUrls(data?.marker?.imageUrls!)} /> : null}
+                {roadview ? <KakaoRoadView /> : null}
             </> : null
     )
 }

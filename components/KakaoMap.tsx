@@ -64,6 +64,7 @@ const KakaoMap = () => {
 
         if (!mapLoaded) return;
         window.kakao.maps.load(() => {
+
             const container = document.getElementById("map");
             navigator.geolocation.getCurrentPosition((position) => {
 
@@ -87,9 +88,9 @@ const KakaoMap = () => {
 
         if (map) {
 
-            const position = new window.kakao.maps.LatLng(parseFloat(y), parseFloat(x));
-            (map as any).setCenter(position);
+            const position = new window.kakao.maps.LatLng(y, x);
             (map as any).setLevel(3);
+            (map as any).setCenter(position);
             centerMarker.current.setPosition(position);
         }
     }, [x, y])

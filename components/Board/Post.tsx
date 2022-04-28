@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { PostWithUser } from './PostBox';
 
@@ -6,10 +7,15 @@ interface IPost {
 }
 
 const Post = ({ postInfo }: IPost) => {
-
+    const { user: { avatar } } = postInfo;
     return (
         <li className="flex p-3 cursor-pointer">
-            <div className="mr-8 bg-gray-400 w-10 h-10 rounded-full" />
+            {avatar ?
+                <div className="relative mr-8 bg-gray-400 w-10 h-10 rounded-full overflow-hidden">
+                    <Image layout="fill" objectFit='cover' src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${avatar}/public`} />
+                </div>
+                :
+                <div className="mr-8 bg-gray-400 w-10 h-10 rounded-full" />}
             <Link href={`/placeBoard/${postInfo.id}`}>
                 <a>
                     <div className="">{postInfo.title}</div>

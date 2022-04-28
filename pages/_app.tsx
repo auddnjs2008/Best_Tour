@@ -9,7 +9,8 @@ import { responseSymbol } from 'next/dist/server/web/spec-compliant/fetch-event'
 
 declare global {
   interface Window {
-    kakao: any
+    kakao: any,
+    Kakao: any
   }
 }
 
