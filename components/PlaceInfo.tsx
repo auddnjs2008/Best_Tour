@@ -157,7 +157,7 @@ const PlaceInfo = () => {
 
                 </div >
                 {data?.marker?.imageUrls && imageWindow ? <ImagesWindow images={makeImageUrls(data?.marker?.imageUrls!)} /> : null}
-                {roadview ? <KakaoRoadView /> : null}
+                {roadview ? <KakaoRoadView setRoadview={setRoadview} /> : null}
             </> : null
     )
 }
