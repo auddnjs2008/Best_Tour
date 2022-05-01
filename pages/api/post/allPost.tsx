@@ -9,9 +9,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         include: {
             user: true,
         }
-    })
+    });
 
-    return res.json({ ok: true, posts });
+    return res.json({ ok: true, posts: posts.reverse() });
 }
 
 export default withApiSession(withHandler("GET", handler))

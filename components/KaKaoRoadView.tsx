@@ -12,7 +12,7 @@ const KakaoRoadView = ({ setRoadview }: IKakaoRoadView) => {
     const [roadviewBox, setRoadviewBox] = useState(null);
     const { focusPosition, focusPosition: { y, x, place_name, place_url, address_name } } = useSelector((state: RootState) => state.map);
 
-    console.log(focusPosition);
+
     const onClose = () => {
         setRoadview(false);
     }
