@@ -18,7 +18,7 @@ const PostBox = () => {
 
     const { user } = useUser();
     const { data } = useSWR<IPostResponse>("/api/post/allPost");
-    const [myPosts] = useState(data?.posts ? data.posts.filter(post => post.userId === user.id) : []);
+    const [myPosts, setMyPosts] = useState<PostWithUser[]>([]);
     const [page, setPage] = useState(1);
     const [isOnlyMyPost, setIsOnlyMyPost] = useState(false);
 
@@ -41,6 +41,10 @@ const PostBox = () => {
         setPage(prev => prev + 1);
     }
 
+    useEffect(() => {
+        if (!data?.ok) return;
+        setMyPosts(data.posts.filter(post => post.userId === user.id));
+    }, [data]);
 
 
     return (
@@ -53,7 +57,7 @@ const PostBox = () => {
                 }
             </ul>
             <div onClick={onCheckClick} className="flex flex-col absolute top-16 right-5">
-                <label><input name="filter" id="all" type="radio" checked /> 전체 게시글</label>
+                <label><input name="filter" id="all" type="radio" defaultChecked /> 전체 게시글</label>
                 <label><input name="filter" id="my" type="radio" /> 내 게시글</label>
             </div>
             <div className="flex items-center justify-center">

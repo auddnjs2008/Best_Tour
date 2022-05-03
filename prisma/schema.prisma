@@ -25,6 +25,7 @@ model User {
   files        File[]
   recentSearch RecentSearch[]
   posts        Post[]
+  replies      Reply[]
 }
 
 model Token {
@@ -96,4 +97,17 @@ model Post {
   imageUrls String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  replies   Reply[]
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
