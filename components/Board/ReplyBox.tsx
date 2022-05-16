@@ -1,6 +1,6 @@
 import useMutation from '@libs/client/useMutation';
 import useUser from '@libs/client/useUser';
-import { Reply } from '@prisma/client';
+import { Reply, User } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -11,7 +11,7 @@ interface IReplyForm {
 }
 
 interface ReplyWithUser extends Reply {
-    user: { name: string }
+    user: { name: string },
 }
 
 interface IAllReply {
@@ -23,6 +23,7 @@ interface IAllReply {
 const ReplyBox = () => {
 
     const router = useRouter();
+
     const { user } = useUser();
     const { register, handleSubmit, reset } = useForm<IReplyForm>();
     const { data, mutate } = useSWR<IAllReply>(router.query.id ? `/api/reply/allReply?postId=${router.query.id}` : "");
@@ -30,19 +31,19 @@ const ReplyBox = () => {
 
     const onValid = ({ message }: IReplyForm) => {
         if (loading) return;
-        replyCreate({ postId: router.query.id, message });
+        if (!router.query.id) return;
+        replyCreate({ postId: +(router.query.id), message });
         mutate((prev) => ({
-            ...prev,
+            ...prev!,
             ok: true,
             replies: [
-                ...prev?.replies!,
+                ...(prev?.replies!),
                 {
-                    postId: -1, userId: -1, id: -1, createdAt: new Date,
-                    updatedAt: new Date, message, user: { name: user.name }
+                    postId: +(router.query.id!), userId: user.id, id: -1, message, user: { name: user.name }
                 }
-
             ]
         }), false);
+
         reset();
     }
 
@@ -51,15 +52,15 @@ const ReplyBox = () => {
         <div className="border-t-2 p-6 z-100 pb-28">
             <h1 className="text-lg font-semibold">댓글</h1>
             <ul className="mt-2 space-y-4 h-52 overflow-auto">
-                {[1, 2, 3, 4, 5, 6].map(item =>
+                {data?.replies.map(item =>
                     <li>
                         <div className="flex">
                             <div className="mr-2 w-7 h-7 rounded-full bg-gray-400" />
-                            <span className="text-sm font-semibold">김명원</span>
+                            <span className="text-sm font-semibold">{item.user.name}</span>
                         </div>
                         <div className="pl-9">
-                            <p>호우동 한번 찾아보겠습니다. 감사합니다.</p>
-                            <div className="text-sm text-gray-400">9시간 전</div>
+                            <p>{item.message}</p>
+                            <div className="text-sm text-gray-400">{item.updatedAt}</div>
                         </div>
                     </li>
                 )}
