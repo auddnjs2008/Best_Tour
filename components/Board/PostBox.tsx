@@ -43,7 +43,7 @@ const PostBox = () => {
 
     useEffect(() => {
         if (!data?.ok) return;
-        setMyPosts(data.posts.filter(post => post.userId === user.id));
+        setMyPosts(data.posts.filter(post => post.userId === user?.id));
     }, [data]);
 
 

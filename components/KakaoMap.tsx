@@ -70,12 +70,20 @@ const KakaoMap = () => {
 
                 const { coords: { latitude, longitude } } = position;
 
-                const options = {
-                    center: new window.kakao.maps.LatLng(latitude, longitude),
-                    level: 20
-                }
+                const options = x && y ?
+                    {
+                        center: new window.kakao.maps.LatLng(y, x),
+                        level: 3
+                    }
+                    : {
+                        center: new window.kakao.maps.LatLng(latitude, longitude),
+                        level: 20
+                    }
                 const map = new window.kakao.maps.Map(container, options);
                 centerMarker.current = new window.kakao.maps.Marker({ map });
+                centerMarker.current.setPosition(
+                    x && y ? new window.kakao.maps.LatLng(y, x) : new window.kakao.maps.LatLng(latitude, longitude)
+                );
                 setMap(map);
 
                 selectMarkers?.forEach((marker) => makeMarker(marker, map));

@@ -3,6 +3,7 @@ import { closeWindow } from '@modules/LikeSlice';
 import { focusMap } from '@modules/mapSlice';
 import { openStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -26,6 +27,8 @@ interface IFolderInfoWindow {
 const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: IFolderInfoWindow) => {
 
     const dispatch = useDispatch();
+    const router = useRouter();
+
     const [semiInfoWindowIndex, setSemiInfoWindowIndex] = useState(-1);
     const [delMutate] = useMutation("/api/markers/delete");
 
@@ -88,6 +91,8 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
             return;
         }
         if (target) {
+            if (router.pathname !== "/placeStore") router.push("/placeStore");
+
             const marker = folderInfo.markers[parseInt(id)];
             getPlaceInfo(marker.name);
             onFileInfoCloseClick();

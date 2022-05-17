@@ -19,7 +19,7 @@ export interface IPlaceResponse {
 
 const PlaceInfo = () => {
 
-    const { focusPosition: { id, place_name, address_name, x, y, category_name } } = useSelector((state: RootState) => state.map);
+    const { focusPosition: { id, place_name, address_name, x, y, category_name, place_url } } = useSelector((state: RootState) => state.map);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const { storeWindow } = useSelector((state: RootState) => state.marker);
     const dispatch = useDispatch();
@@ -111,7 +111,7 @@ const PlaceInfo = () => {
     return (
         place_name ?
             <>
-                <div className="absolute bottom-20 p-3 z-10 bg-white max-w-lg w-full border-2 border-blue-500">
+                <div className="absolute bottom-20 p-3 z-20 bg-white max-w-lg w-full border-2 border-blue-500">
                     <button onClick={onInfoToggleClick} className="w-full flex justify-center ">
                         {infoToggle ?
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -126,7 +126,10 @@ const PlaceInfo = () => {
                         <h1 className="text-xl mr-3">{place_name}</h1>
                         <h3 className="text-sm">{getCategory(category_name)}</h3>
                     </div>
-                    <div className="text-sm">{address_name}</div>
+                    <div className="text-sm flex justify-between">
+                        <div>{address_name} </div>
+                        <a href={place_url} target="_blank" className="text-blue-500 ">상세페이지 가기</a>
+                    </div>
                     <ul className="flex p-3 border-2  mt-3  justify-around">
                         <li onClick={onRoadviewClick} className="cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

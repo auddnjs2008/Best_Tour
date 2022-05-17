@@ -1,6 +1,7 @@
 
 import ImagesWindow from '@components/ImagesWindow';
 import Layout from '@components/Layout';
+import kakaoSearch from '@libs/client/kakaoSearch';
 import useMap from '@libs/client/useMap';
 import useMutation from '@libs/client/useMutation';
 import { RootState } from '@modules/index';
@@ -32,6 +33,7 @@ const PostWrite = () => {
 
     const { register, handleSubmit, watch, resetField } = useForm<IPostForm>();
     const photos = watch("files");
+    const inputAddress = watch("address");
     const dispatch = useDispatch();
     const [previewPhotos, setPreviewPhotos] = useState<string[] | null>(null);
     const [imageLoad, setImageLoad] = useState(false);
@@ -80,10 +82,11 @@ const PostWrite = () => {
 
         const geocoder = new window.kakao.maps.services.Geocoder();
 
+
         const callback = function (result: any, status: any) {
             if (status === window.kakao.maps.services.Status.OK) {
                 // 전송을 해줘야 한다.
-
+                console.log(result);
                 const { road_address: { address_name, x, y } } = result[0];
                 submitAndStore(address_name, y, x, data);
             } else {
@@ -91,7 +94,8 @@ const PostWrite = () => {
             }
         };
 
-        geocoder.addressSearch(data.address + ` ${data.name}`, callback);
+
+        geocoder.addressSearch(data.address, callback);
     }
 
 

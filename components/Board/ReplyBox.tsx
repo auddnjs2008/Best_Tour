@@ -1,6 +1,7 @@
 import useMutation from '@libs/client/useMutation';
 import useUser from '@libs/client/useUser';
 import { Reply, User } from '@prisma/client';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -11,7 +12,7 @@ interface IReplyForm {
 }
 
 interface ReplyWithUser extends Reply {
-    user: { name: string },
+    user: { name: string; avatar: string; },
 }
 
 interface IAllReply {
@@ -27,6 +28,7 @@ const ReplyBox = () => {
     const { user } = useUser();
     const { register, handleSubmit, reset } = useForm<IReplyForm>();
     const { data, mutate } = useSWR<IAllReply>(router.query.id ? `/api/reply/allReply?postId=${router.query.id}` : "");
+
     const [replyCreate, { data: _, loading }] = useMutation("/api/reply/create");
 
     const onValid = ({ message }: IReplyForm) => {
@@ -39,7 +41,7 @@ const ReplyBox = () => {
             replies: [
                 ...(prev?.replies!),
                 {
-                    postId: +(router.query.id!), userId: user.id, id: -1, message, user: { name: user.name }
+                    postId: +(router.query.id!), userId: user.id, id: -1, message, user: { name: user.name, avatar: user.avatar }
                 }
             ]
         }), false);
@@ -51,11 +53,13 @@ const ReplyBox = () => {
     return (
         <div className="border-t-2 p-6 z-100 pb-28">
             <h1 className="text-lg font-semibold">댓글</h1>
-            <ul className="mt-2 space-y-4 h-52 overflow-auto">
+            <ul className="mt-2 space-y-4 h-64 overflow-auto">
                 {data?.replies.map(item =>
                     <li>
                         <div className="flex">
-                            <div className="mr-2 w-7 h-7 rounded-full bg-gray-400" />
+                            <div className="mr-2 w-7 h-7 relative rounded-full bg-white overflow-hidden ">
+                                <Image layout="fill" objectFit='contain' src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${item.user.avatar}/public`} />
+                            </div>
                             <span className="text-sm font-semibold">{item.user.name}</span>
                         </div>
                         <div className="pl-9">
