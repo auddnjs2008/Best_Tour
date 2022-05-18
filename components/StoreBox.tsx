@@ -196,7 +196,7 @@ const StoreBox = () => {
 
                         <ul onClick={onFileClick} className="h-80  overflow-auto">
                             {folderData?.folders.map((folder: IFolder, index: number) =>
-                                <li data-id={index} className="flex items-center border-b-2 p-3 cursor-pointer">
+                                <li key={index} data-id={index} className="flex items-center border-b-2 p-3 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
                                     </svg>

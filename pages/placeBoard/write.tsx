@@ -86,9 +86,14 @@ const PostWrite = () => {
         const callback = function (result: any, status: any) {
             if (status === window.kakao.maps.services.Status.OK) {
                 // 전송을 해줘야 한다.
-                console.log(result);
-                const { road_address: { address_name, x, y } } = result[0];
-                submitAndStore(address_name, y, x, data);
+
+                if (result[0].road_address) {
+                    const { road_address: { address_name, x, y } } = result[0];
+                    submitAndStore(address_name, y, x, data);
+                } else {
+                    const { address_name, x, y } = result[0];
+                    submitAndStore(address_name, y, x, data);
+                }
             } else {
                 alert("장소를 발견하지 못했습니다. 주소나 이름을 다시 써주세요");
             }

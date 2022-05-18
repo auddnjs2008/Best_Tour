@@ -7,14 +7,14 @@ import useSWR from 'swr';
 
 interface IMarkerController {
     markers: Marker[];
-    setSelectMarkers: Dispatch<SetStateAction<Marker[] | undefined>>
+    setSelectMarkers: Dispatch<SetStateAction<Marker[] | undefined>>;
 }
 interface IFolderResponse {
     ok: boolean;
     folders: File[]
 }
 
-const MarkerController = ({ markers, setSelectMarkers }: IMarkerController) => {
+const MarkerController = ({ markers, setSelectMarkers, }: IMarkerController) => {
 
     const [isColor, setIsColor] = useState(true);
     const [color, setColor] = useState("");
@@ -59,6 +59,7 @@ const MarkerController = ({ markers, setSelectMarkers }: IMarkerController) => {
                 setSelectMarkers(markers);
             }
             setFolderId("");
+
         }
     }
 
@@ -74,6 +75,7 @@ const MarkerController = ({ markers, setSelectMarkers }: IMarkerController) => {
                 setSelectMarkers(markers);
             }
             setColor("");
+
         }
     }
 
@@ -114,7 +116,7 @@ const MarkerController = ({ markers, setSelectMarkers }: IMarkerController) => {
                             :
                             <ul onClick={onFolderClick} className="text-sm font-semibold">
                                 {data?.folders.map(folder =>
-                                    <li data-fileId={folder.id} className={cls("cursor-pointer", +folderId === folder.id ? "text-yellow-400" : "")}>{folder.name}</li>
+                                    <li key={folder.id} data-fileId={folder.id} className={cls("cursor-pointer", +folderId === folder.id ? "text-yellow-400" : "")}>{folder.name}</li>
                                 )}
                             </ul>
                         }

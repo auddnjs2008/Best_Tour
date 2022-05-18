@@ -14,10 +14,13 @@ interface IPostResponse {
     posts: PostWithUser[]
 }
 
-const PostBox = () => {
+interface IPostBox {
+    posts: PostWithUser[]
+}
+const PostBox = ({ posts }: IPostBox) => {
 
     const { user } = useUser();
-    const { data } = useSWR<IPostResponse>("/api/post/allPost");
+    // const { data } = useSWR<IPostResponse>("/api/post/allPost");
     const [myPosts, setMyPosts] = useState<PostWithUser[]>([]);
     const [page, setPage] = useState(1);
     const [isOnlyMyPost, setIsOnlyMyPost] = useState(false);
@@ -37,23 +40,23 @@ const PostBox = () => {
     }
 
     const onRightClick = () => {
-        if (data?.posts && page === Math.ceil(data?.posts.length / 6)) return;
+        if (posts && page === Math.ceil(posts.length / 6)) return;
         setPage(prev => prev + 1);
     }
 
     useEffect(() => {
-        if (!data?.ok) return;
-        setMyPosts(data.posts.filter(post => post.userId === user?.id));
-    }, [data]);
+        if (posts.length === 0) return;
+        setMyPosts(posts.filter(post => post.userId === user?.id));
+    }, [posts]);
 
 
     return (
         <div className="relative border-2 h-[90%]">
             <ul className="mt-16 h-[80%]">
                 {isOnlyMyPost ?
-                    myPosts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser) => <PostItem postInfo={item}></PostItem>)
+                    myPosts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
                     :
-                    data?.posts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser) => <PostItem postInfo={item}></PostItem>)
+                    posts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
                 }
             </ul>
             <div onClick={onCheckClick} className="flex flex-col absolute top-16 right-5">
@@ -65,7 +68,7 @@ const PostBox = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 <span className="select-none">
-                    {page} / {data?.posts ? Math.ceil(data?.posts.length / 6) : 0}</span>
+                    {page} / {posts ? Math.ceil(posts.length / 6) : 0}</span>
                 <svg onClick={onRightClick} xmlns="http://www.w3.org/2000/svg" className="cursor-pointer h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
@@ -73,5 +76,8 @@ const PostBox = () => {
         </div>
     )
 }
+
+
+
 
 export default PostBox;

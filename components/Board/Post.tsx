@@ -14,7 +14,7 @@ const Post = ({ postInfo }: IPost) => {
     const { id, user: { avatar } } = postInfo;
 
     return (
-        <li key={id + ""} className="flex items-center p-3 cursor-pointer">
+        <li className="flex items-center p-3 cursor-pointer">
             {avatar ?
                 <div className="relative mr-8 bg-gray-400 w-10 h-10 rounded-full overflow-hidden">
                     <Image layout="fill" objectFit='cover' src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${avatar}/public`} />

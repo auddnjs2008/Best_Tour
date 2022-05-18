@@ -55,7 +55,7 @@ const ReplyBox = () => {
             <h1 className="text-lg font-semibold">댓글</h1>
             <ul className="mt-2 space-y-4 h-64 overflow-auto">
                 {data?.replies.map(item =>
-                    <li>
+                    <li key={item.id}>
                         <div className="flex">
                             <div className="mr-2 w-7 h-7 relative rounded-full bg-white overflow-hidden ">
                                 <Image layout="fill" objectFit='contain' src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${item.user.avatar}/public`} />

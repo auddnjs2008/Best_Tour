@@ -1,13 +1,15 @@
 import Layout from '@components/Layout'
 import useUser from '@libs/client/useUser'
+import client from '@libs/server/client';
 import { Post } from '@prisma/client';
+import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 
-const myProfile = () => {
+const MyProfile: NextPage = () => {
 
     const { user } = useUser();
     const router = useRouter();
@@ -70,4 +72,6 @@ const myProfile = () => {
     )
 }
 
-export default myProfile
+
+
+export default MyProfile

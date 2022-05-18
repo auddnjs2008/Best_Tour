@@ -46,8 +46,8 @@ const ImagesWindow = ({ images }: IImagesWindow) => {
                 </button>
                 <div className="flex relative items-center mb-20 w-[32rem] h-[300px] overflow-hidden bg-yellow-300">
                     <ul style={{ transform: `translateX(${-1 * (number - 1) * 512}px)` }} className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
-                        {images.map(image =>
-                            <li className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
+                        {images.map((image, index) =>
+                            <li key={index} className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
                                 <Image src={image} layout="fill" objectFit="contain"></Image>
                             </li>
                         )}
@@ -66,7 +66,7 @@ const ImagesWindow = ({ images }: IImagesWindow) => {
                 </div>
                 <ul onClick={onImageClick} className="select-none w-full h-20 p-2 grid  justify-center gap-10  grid-flow-col absolute bottom-5  ">
                     {images.map((image, index) =>
-                        <li data-id={index + 1} className={cls("relative w-[70px] h-full bg-white", index + 1 === number ? "border-2 border-blue-400" : "")}>
+                        <li key={index} data-id={index + 1} className={cls("relative w-[70px] h-full bg-white", index + 1 === number ? "border-2 border-blue-400" : "")}>
                             <Image src={image} layout="fill" />
                         </li>
                     )}

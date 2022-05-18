@@ -128,7 +128,7 @@ const PlaceInfo = () => {
                     </div>
                     <div className="text-sm flex justify-between">
                         <div>{address_name} </div>
-                        <a href={place_url} target="_blank" className="text-blue-500 ">상세페이지 가기</a>
+                        <a href={place_url} target="_blank" rel="noreferrer" className="text-blue-500 ">상세페이지 가기</a>
                     </div>
                     <ul className="flex p-3 border-2  mt-3  justify-around">
                         <li onClick={onRoadviewClick} className="cursor-pointer">

@@ -1,7 +1,9 @@
 import useMap from '@libs/client/useMap';
 import useMutation from '@libs/client/useMutation';
 import useUser from '@libs/client/useUser';
+import client from '@libs/server/client';
 import { focusMap } from '@modules/mapSlice';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
@@ -12,33 +14,33 @@ import ReplyBox from './ReplyBox';
 
 
 interface IPostResponse {
-    ok: boolean;
+    // ok: boolean;
     post: PostWithUser;
 }
 
-const PostDetail = () => {
+const PostDetail = ({ post }: IPostResponse) => {
 
     const [number, setNumber] = useState(1);
     const { user } = useUser();
     const mapLoaded = useMap();
     const router = useRouter();
     const dispatch = useDispatch();
-    const { data } = useSWR<IPostResponse>(`/api/post/postInfo?id=${router.query.id ? router.query.id : ""}`);
+    // const { data } = useSWR<IPostResponse>(`/api/post/postInfo?id=${router.query.id ? router.query.id : ""}`);
     const [delMutate, { data: delData }] = useMutation("/api/post/delete");
 
 
     const onDelClick = () => {
-        delMutate({ boardId: data?.post.id });
+        delMutate({ boardId: post.id });
     }
 
 
     const onRightClick = () => {
-        if (number === data?.post.imageUrls.split(" ").length) setNumber(1);
+        if (number === post.imageUrls.split(" ").length) setNumber(1);
         else setNumber(prev => prev + 1);
     }
 
     const onLeftClick = () => {
-        if (number === 1) setNumber(data?.post.imageUrls ? data?.post.imageUrls.split(" ").length : 1);
+        if (number === 1) setNumber(post.imageUrls ? post.imageUrls.split(" ").length : 1);
         else setNumber(prev => prev - 1);
     }
 
@@ -49,15 +51,18 @@ const PostDetail = () => {
             const callback = function (result: any, status: any) {
                 if (status === window.kakao.maps.services.Status.OK) {
                     // 전송을 해줘야 한다.
+
                     if (result.length === 1) {
-                        dispatch(focusMap(result[0]));
+                        setTimeout(() => { dispatch(focusMap(result[0])); }, 500);
+
                     } else {
-                        const realPlace = result.find((item: any) => item.road_address_name === data?.post.address);
+                        const realPlace = result.find((item: any) =>
+                            item.road_address_name === post.address || item.address_name === post.address);
                         if (!realPlace) {
                             alert("등록된 장소가 없습니다.");
                             return;
                         }
-                        dispatch(focusMap(realPlace));
+                        setTimeout(() => { dispatch(focusMap(realPlace)); }, 500);
                     }
                     router.push("/placeStore");
 
@@ -65,8 +70,8 @@ const PostDetail = () => {
                     alert("장소를 발견하지 못했습니다. 주소나 이름을 다시 써주세요");
                 }
             };
-            if (data)
-                places.keywordSearch(data?.post.placeName, callback);
+
+            places.keywordSearch(post.placeName, callback);
         });
     }
 
@@ -79,14 +84,21 @@ const PostDetail = () => {
         }
     }, [delData])
 
+
+    if (router.isFallback) {
+        return <div>
+            <header className="z-20 bg-white fixed max-w-lg w-full top-0 text-center border-2 p-3 border-yellow-400">Loading...</header>
+        </div>
+    }
+
     return (
         <div>
-            <header className="z-20 bg-white fixed max-w-lg w-full top-0 text-center border-2 p-3 border-yellow-400">{data?.post.title}</header>
+            <header className="z-20 bg-white fixed max-w-lg w-full top-0 text-center border-2 p-3 border-yellow-400">{post.title}</header>
             <div className="mt-16 pb-20 ">
                 <div className="mb-14 text-center relative">
                     <div>
-                        <h1 className="mb-5 text-xl font-semibold text-blue-400">{data?.post.placeName}</h1>
-                        <div>{data?.post.address}</div>
+                        <h1 className="mb-5 text-xl font-semibold text-blue-400">{post.placeName}</h1>
+                        <div>{post.address}</div>
                     </div>
                     <div className="flex justify-end mt-2">
                         <button onClick={onMoveMapClick} className=" flex border-2 rounded-md p-2">
@@ -95,10 +107,10 @@ const PostDetail = () => {
                             </svg>
                             지도보기
                         </button>
-                        {user?.id === data?.post.userId ?
+                        {user?.id === post.userId ?
                             <button onClick={onDelClick} className="flex items-center border-2 p-2 rounded-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="text-red-500 h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                 </svg>
                                 삭제
                             </button>
@@ -106,11 +118,11 @@ const PostDetail = () => {
                         }
                     </div>
                 </div>
-                {data?.post.imageUrls ?
+                {post.imageUrls ?
                     <div className="flex relative items-center mb-10 w-[32rem] h-[300px] overflow-hidden ">
                         <ul style={{ transform: `translateX(${-1 * (number - 1) * 512}px)` }} className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
-                            {data?.post.imageUrls.split(" ").map(image =>
-                                <li className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
+                            {post.imageUrls.split(" ").map((image, index) =>
+                                <li key={index} className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
                                     <Image src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${image}/public`} layout="fill" objectFit="contain"></Image>
 
                                 </li>
@@ -131,7 +143,7 @@ const PostDetail = () => {
                     :
                     null}
                 <p className="p-2 leading-7 select-none ">
-                    {data?.post.Message}
+                    {post.Message}
                 </p>
             </div>
             <ReplyBox />
@@ -139,5 +151,11 @@ const PostDetail = () => {
     )
 
 }
+
+
+
+
+
+
 
 export default PostDetail;
