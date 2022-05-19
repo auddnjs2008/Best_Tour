@@ -27,10 +27,14 @@ const PlaceInfo = () => {
     const [roadview, setRoadview] = useState(false);
 
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
+    console.log(data);
+
+    const { mutate: allMarkMutate } = useSWR("/api/markers/allMark");
 
     const [del] = useMutation("/api/markers/delete");
 
     const messageLoaded = useKaKaoMessage();
+
 
 
 
@@ -43,10 +47,12 @@ const PlaceInfo = () => {
         if (data?.ok) {
             //삭제를 해줘야 한다. 
             del({ placeId: id });
+            allMarkMutate((prev: any) => ({ ok: true, markers: prev.markers.filter((marker: any) => marker.placeId !== id) }), false);
+            mutate({ ok: false }, false);
         } else {
             dispatch(openStoreWindow());
+
         }
-        mutate(prev => ({ ...prev, ok: !prev?.ok }), false);
     }
 
 

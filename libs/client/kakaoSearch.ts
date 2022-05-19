@@ -1,11 +1,11 @@
 import { focusMap } from "@modules/mapSlice";
 import { Dispatch } from "react";
-import { useDispatch } from "react-redux";
 
 const kakaoSearch = (
   place: string,
   placeId: string | null,
-  dispatch: Dispatch<any>
+  dispatch: Dispatch<any>,
+  map: any
 ) => {
   window.kakao.maps.load((result: any) => {
     const places = new window.kakao.maps.services.Places();

@@ -4,10 +4,11 @@ import { RootState } from '@modules/index';
 import { openImageWindow, toggleWindow } from '@modules/LikeSlice'
 import { closeStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
+import { IallMarkResult } from 'pages/placeStore';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import useSWR from 'swr';
+import useSWR, { KeyedMutator, useSWRConfig, } from 'swr';
 import ImagesWindow from './ImagesWindow';
 import { IPlaceResponse } from './PlaceInfo';
 
@@ -26,8 +27,13 @@ interface IFolder {
     userId: string;
     markers: Marker[];
 }
+interface IStoreBox {
+    markersMutate: KeyedMutator<IallMarkResult>
+}
 
-const StoreBox = () => {
+
+
+const StoreBox = ({ markersMutate }: IStoreBox) => {
 
     const { focusPosition: { y: latitude, x: longitude, place_name, id: place_id, message, imageUrls, color: initColor } } = useSelector((state: RootState) => state.map);
     const { selectFileInfo } = useSelector((state: RootState) => state.marker);
@@ -40,9 +46,12 @@ const StoreBox = () => {
 
     const photo = watch("files");
 
+
+
     const [markerSave, { data, loading, error }] = useMutation("/api/markers/create");
-    const { data: folderData, mutate } = useSWR("/api/folder/foldersInfo");
+    const { data: folderData } = useSWR("/api/folder/foldersInfo");
     const { data: markerData, mutate: markerMutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${place_id}`);
+
 
     const [deletePhotos] = useMutation("/api/delImages");
 
@@ -89,6 +98,8 @@ const StoreBox = () => {
             await delImages();
         }
 
+        let imageString = "";
+
         if (photoPreview && photoPreview.length > 0) {
             setImageLoad(true);
             let fetchArr: any[] = [];
@@ -104,20 +115,32 @@ const StoreBox = () => {
                 idFetches.push(getImageId(form, data.uploadURL));
             })
 
-            const imageString = (await Promise.all(idFetches)).map(item => item.result.id).join(" ");
+            imageString = (await Promise.all(idFetches)).map(item => item.result.id).join(" ");
             setImageLoad(false);
             // api로 저장
-            markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color });
-        } else {
-
-            markerSave({ fileId: selectFileInfo!.id, message: info, imageUrls: "", latitude, longitude, name: place_name, id: place_id, color });
         }
-        markerMutate();
-        dispatch(closeStoreWindow());
+        const saveData = { fileId: selectFileInfo!.id, message: info, imageUrls: imageString, latitude, longitude, name: place_name, id: place_id, color };
+        markerSave(saveData);
+        markerMutate({
+            ok: true,
+            marker:
+            {
+                id: 1, userId: 1, message: info, name: place_name, color,
+                latitude, longitude, placeId: place_id, createdAt: new Date, updatedAt: new Date,
+                fileId: selectFileInfo!.id, imageUrls: imageString
+            }
+        }, false);
 
-
+        markersMutate((prev: any) => ({
+            ok: true,
+            markers: [...prev?.markers!,
+            {
+                id: 1, userId: 1, message: info, name: place_name, color,
+                latitude, longitude, placeId: place_id, createdAt: new Date, updatedAt: new Date,
+                fileId: selectFileInfo!.id, imageUrls: imageString
+            }]
+        }), false);
     }
-
 
 
     useEffect(() => {
@@ -147,10 +170,15 @@ const StoreBox = () => {
     }, [imageUrls, initColor]);
 
 
+    useEffect(() => {
+        if (data?.ok) {
+            dispatch(closeStoreWindow());
+        }
+    }, [data])
 
     return (
         <>
-            <div className="absolute w-full max-w-lg     bottom-1 z-20 space-y-2 bg-white border-2 border-blue-500 p-3">
+            <div className="absolute w-full max-w-lg  bottom-1 z-40 space-y-2 bg-white border-2 border-blue-500 p-3">
                 <button onClick={onCloseClick} >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

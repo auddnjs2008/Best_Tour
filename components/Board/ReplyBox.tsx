@@ -3,6 +3,7 @@ import useUser from '@libs/client/useUser';
 import { Reply, User } from '@prisma/client';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
 
@@ -48,6 +49,8 @@ const ReplyBox = () => {
 
         reset();
     }
+
+
 
 
     return (

@@ -9,8 +9,7 @@ import kakaoSearch from '@libs/client/kakaoSearch';
 import MarkerController from './MarkerController';
 
 
-interface IallMarkResult {
-    ok: boolean;
+interface IKaKaoMap {
     markers: Marker[]
 }
 
@@ -31,14 +30,15 @@ const markerColor: ImarkerColor = {
 }
 
 
-const KakaoMap = () => {
+const KakaoMap = ({ markers }: IKaKaoMap) => {
 
     const { focusPosition: { x, y } } = useSelector((state: RootState) => state.map);
     const [map, setMap] = useState(null);
     const centerMarker = useRef<any>(null);
     const dispatch = useDispatch();
-    const { data: markerData } = useSWR<IallMarkResult>("/api/markers/allMark");
-    const [selectMarkers, setSelectMarkers] = useState(markerData?.markers);
+    const [selectMarkers, setSelectMarkers] = useState<Marker[] | undefined>(markers);
+
+
 
     const mapLoaded = useMap();
 
@@ -53,7 +53,12 @@ const KakaoMap = () => {
             new window.kakao.maps.Size(25, 25), new window.kakao.maps.Point(13, 34)
         );
         window.kakao.maps.event.addListener(marker, "click", () => {
-            kakaoSearch(name, placeId, dispatch);
+            kakaoSearch(name, placeId, dispatch, map);
+            const position = new window.kakao.maps.LatLng(lat, long);
+            (map as any).setLevel(3);
+            (map as any).setCenter(position);
+            centerMarker.current.setPosition(position);
+
         })
         marker.setImage(markerImage);
 
@@ -99,12 +104,12 @@ const KakaoMap = () => {
     }, [x, y])
 
     useEffect(() => {
-        setSelectMarkers(markerData?.markers)
-    }, [markerData])
+        setSelectMarkers(markers)
+    }, [markers])
 
 
     return <div className="mx-auto mt-5" id="map" style={{ width: "500px", height: "400px" }}>
-        <MarkerController markers={markerData ? markerData.markers : []} setSelectMarkers={setSelectMarkers} />
+        <MarkerController markers={markers ? markers : []} setSelectMarkers={setSelectMarkers} />
     </div>
 
 }

@@ -1,5 +1,7 @@
 import useMutation from '@libs/client/useMutation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 interface IFileForm {
     name: string;
@@ -13,11 +15,18 @@ interface IFolderCreateBox {
 const FolderCreateBox = ({ onCloseFolderCreate }: IFolderCreateBox) => {
 
     const { register, handleSubmit } = useForm<IFileForm>();
-    const [mutate] = useMutation("/api/folder/create");
+    const [mutate, { data, loading }] = useMutation("/api/folder/create");
 
     const onValid = ({ name, info }: IFileForm) => {
+        if (loading) return;
         mutate({ name, info });
     };
+
+    useEffect(() => {
+        if (data?.ok) {
+            onCloseFolderCreate();
+        }
+    }, [data]);
 
 
 
@@ -32,7 +41,7 @@ const FolderCreateBox = ({ onCloseFolderCreate }: IFolderCreateBox) => {
             <form onSubmit={handleSubmit(onValid)} className="flex flex-col">
                 <input {...register("name", { required: true })} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="폴더명을 입력해 주세요" />
                 <input {...register("info", { required: true })} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="설명을 입력해 주세요" />
-                <button className=" translate-y-14 bg-blue-400 p-2 text-white">완료</button>
+                <button className=" translate-y-14 bg-blue-400 p-2 text-white">{loading ? "로딩중" : "완료"}</button>
             </form>
 
         </div>

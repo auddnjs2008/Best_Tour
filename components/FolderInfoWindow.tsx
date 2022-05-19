@@ -3,9 +3,11 @@ import { closeWindow } from '@modules/LikeSlice';
 import { focusMap } from '@modules/mapSlice';
 import { openStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
+import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import useSWR from 'swr';
 
 
 interface FileWithMarker extends File {
@@ -30,7 +32,9 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
     const router = useRouter();
 
     const [semiInfoWindowIndex, setSemiInfoWindowIndex] = useState(-1);
+    const [alarmWindow, setAlarmWindow] = useState(false);
     const [delMutate] = useMutation("/api/markers/delete");
+    const { mutate: allMarkMutate } = useSWR("/api/markers/allMark");
 
 
     const getPlaceInfo = (name: string, semiInfo: FixMarkInfo | null = null) => {
@@ -48,9 +52,14 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
 
     }
 
+    const deleteFolder = () => {
+        console.log(folderInfo);
+    }
+
     const deleteMarker = (index: number) => {
         const placeId = folderInfo.markers[index].placeId;
         const markers = [...folderInfo.markers];
+        allMarkMutate((prev: any) => ({ ok: true, markers: prev.markers.filter((marker: any) => marker.placeId !== placeId) }), false);
         delMutate({ placeId });
         markers.splice(index, 1);
         setFolderInfo({ ...folderInfo, markers });
@@ -91,12 +100,12 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
             return;
         }
         if (target) {
-            if (router.pathname !== "/placeStore") router.push("/placeStore");
 
             const marker = folderInfo.markers[parseInt(id)];
-            getPlaceInfo(marker.name);
+            router.pathname !== "/placeStore" ? setTimeout(() => getPlaceInfo(marker.name), 500) : getPlaceInfo(marker.name);
             onFileInfoCloseClick();
             dispatch(closeWindow());
+            if (router.pathname !== "/placeStore") router.push("/placeStore");
         }
     }
 
@@ -125,6 +134,12 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
                 <div className=" text-center">
                     <h1 className="text-2xl font-semibold">{folderInfo.name}</h1>
                     <p className="text-sm">{folderInfo.info}</p>
+                    <button className="flex absolute top-14 right-5 border-2 border-blue-500 p-1 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        삭제
+                    </button>
                 </div>
             </header>
             <ul onClick={onMarkerClick} className="w-full h-[70%]   overflow-auto">
@@ -152,6 +167,9 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
                             : null}
                     </li>)}
             </ul>
+            <div className="w-full h-full fixed -top-2 left-0 bg-slate-500">
+                <div>알람창입니다.</div>
+            </div>
         </div>
     )
 }
