@@ -42,7 +42,7 @@ const ReplyBox = () => {
             replies: [
                 ...(prev?.replies!),
                 {
-                    postId: +(router.query.id!), userId: user.id, id: -1, message, user: { name: user.name, avatar: user.avatar }
+                    postId: +(router.query.id!), userId: user.id, id: -1, message, createdAt: new Date, updatedAt: new Date, user: { name: user.name, avatar: user.avatar }
                 }
             ]
         }), false);
