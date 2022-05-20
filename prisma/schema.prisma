@@ -35,6 +35,8 @@ model Token {
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Marker {
@@ -52,6 +54,8 @@ model Marker {
   file      File     @relation(fields: [fileId], references: [id])
   fileId    Int
   imageUrls String
+
+  @@index([userId, fileId])
 }
 
 model File {
@@ -61,6 +65,8 @@ model File {
   userId  Int
   markers Marker[]
   info    String
+
+  @@index([userId])
 }
 
 model RecentSearch {
@@ -82,6 +88,8 @@ model RecentSearch {
   isMarker            Boolean
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Post {
@@ -98,6 +106,8 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   replies   Reply[]
+
+  @@index([userId])
 }
 
 model Reply {
@@ -110,4 +120,5 @@ model Reply {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId, postId])
 }

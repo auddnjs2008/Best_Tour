@@ -2,7 +2,7 @@ import Layout from '@components/Layout'
 import useUser from '@libs/client/useUser'
 import client from '@libs/server/client';
 import { Post } from '@prisma/client';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -70,6 +70,14 @@ const MyProfile: NextPage = () => {
             </div>
         </Layout>
     )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+
+
+    return {
+        props: {}
+    }
 }
 
 

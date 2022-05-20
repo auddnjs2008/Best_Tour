@@ -10,7 +10,7 @@ interface FileWithMarker extends File {
     markers: Marker[]
 }
 
-interface IFoldersResult {
+export interface IFoldersResult {
     ok: boolean;
     folders: FileWithMarker[];
 }
@@ -103,7 +103,7 @@ const LikeWindow = () => {
                 <button onClick={onOpenFolderCreate} className="w-full border-2 p-2 border-blue-500 text-blue-500">새 폴더 추가하기</button>
             </div>
             {createFolder ? <FolderCreateBox onCloseFolderCreate={onCloseFolderCreate} /> : null}
-            {folderInfo ? <FolderInfoWindow setFolderInfo={setFolderInfo} onFileInfoCloseClick={onFileInfoCloseClick} folderInfo={folderInfo} /> : null}
+            {folderInfo ? <FolderInfoWindow mutate={mutate} setFolderInfo={setFolderInfo} onFileInfoCloseClick={onFileInfoCloseClick} folderInfo={folderInfo} /> : null}
         </>
     )
 }

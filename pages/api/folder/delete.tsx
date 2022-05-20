@@ -14,7 +14,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             }
         });
 
-        await client.marker.delete({
+        await client.file.delete({
             where: {
                 id: +fileId
             }

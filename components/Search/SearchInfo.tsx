@@ -62,7 +62,7 @@ const SearchInfo = ({ setInputFocus }: ISearchInfo) => {
                         <li id={String(index)} key={item.id} className="text-base cursor-pointer border-t p-3 flex content-center items-center">{item.place_name}</li>)
                     :
                     searchesData?.searches.map((item, index) =>
-                        <li id={String(index)} key={index} className="text-base cursor-pointer border-t p-3 flex content-center items-center">
+                        <li id={String(index)} key={index} className={cls(!item.isMarker && !recentSearch ? "hidden" : "border-t", "text-base cursor-pointer  p-3 flex content-center items-center")}>
                             {item.isMarker ?
                                 <div className="rounded-full w-7 h-7 flex justify-center items-center border-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-400 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

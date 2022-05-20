@@ -5,9 +5,10 @@ import { openStoreWindow, selectFile } from '@modules/markerSlice';
 import { File, Marker } from '@prisma/client';
 import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import useSWR from 'swr';
+import useSWR, { KeyedMutator } from 'swr';
+import { IFoldersResult } from './LikeWindow';
 
 
 interface FileWithMarker extends File {
@@ -24,15 +25,17 @@ interface IFolderInfoWindow {
     folderInfo: FileWithMarker;
     setFolderInfo: React.Dispatch<React.SetStateAction<FileWithMarker | null>>;
     onFileInfoCloseClick: () => void;
+    mutate: KeyedMutator<IFoldersResult>
 }
 
-const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: IFolderInfoWindow) => {
+const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick, mutate }: IFolderInfoWindow) => {
 
     const dispatch = useDispatch();
     const router = useRouter();
 
     const [semiInfoWindowIndex, setSemiInfoWindowIndex] = useState(-1);
     const [alarmWindow, setAlarmWindow] = useState(false);
+    const [delFolderMutate, { data, loading, error }] = useMutation("/api/folder/delete");
     const [delMutate] = useMutation("/api/markers/delete");
     const { mutate: allMarkMutate } = useSWR("/api/markers/allMark");
 
@@ -53,7 +56,11 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
     }
 
     const deleteFolder = () => {
-        console.log(folderInfo);
+        delFolderMutate({ fileId: folderInfo.id });
+    }
+
+    const onDeleteFolderClick = () => {
+        setAlarmWindow(true);
     }
 
     const deleteMarker = (index: number) => {
@@ -75,6 +82,10 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
         dispatch(openStoreWindow());
         dispatch(closeWindow());
 
+    }
+
+    const onAlarmCloseClick = () => {
+        setAlarmWindow(false);
     }
 
     const onMarkerClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -109,6 +120,14 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
         }
     }
 
+    useEffect(() => {
+        if (data?.ok) {
+            setAlarmWindow(false);
+            onFileInfoCloseClick();
+            mutate(prev => ({ ok: true, folders: prev?.folders.filter(folder => folder.id !== folderInfo.id) || [] }), false);
+        }
+    }, [data]);
+
     return (
         <div className="absolute w-full h-[99%] max-w-lg     bottom-1 z-20 space-y-2 bg-white border-2 border-blue-500 p-3">
             <header className="mb-10">
@@ -134,11 +153,11 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
                 <div className=" text-center">
                     <h1 className="text-2xl font-semibold">{folderInfo.name}</h1>
                     <p className="text-sm">{folderInfo.info}</p>
-                    <button className="flex absolute top-14 right-5 border-2 border-blue-500 p-1 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <button onClick={onDeleteFolderClick} className="flex text-sm absolute top-14 right-5  p-1 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                        삭제
+                        폴더삭제
                     </button>
                 </div>
             </header>
@@ -167,10 +186,22 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick }: I
                             : null}
                     </li>)}
             </ul>
-            <div className="w-full h-full fixed -top-2 left-0 bg-slate-500">
-                <div>알람창입니다.</div>
+            {alarmWindow ? <div className="w-full h-full flex justify-center items-center fixed -top-2 left-0 bg-[rgba(15,15,15,0.7)]">
+                <div className="max-w-lg  p-14 space-y-12 bg-white py-14">
+                    <p className="text-lg">
+                        폴더 삭제시 포함되어있는
+                        <br />
+                        마커들도 모두 삭제됩니다.
+                        삭제하시겠습니까?
+                    </p>
+                    <div className="flex justify-center space-x-5">
+                        <button onClick={deleteFolder} className="border-2 border-blue-500 py-3 px-10">{loading ? "삭제중..." : "삭제"}</button>
+                        <button onClick={onAlarmCloseClick} className="border-2 border-blue-500 py-3 px-10">취소</button>
+                    </div>
+                </div>
             </div>
-        </div>
+                : null}
+        </div >
     )
 }
 

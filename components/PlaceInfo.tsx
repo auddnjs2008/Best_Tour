@@ -7,7 +7,7 @@ import { Marker } from '@prisma/client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import ImagesWindow from './ImagesWindow';
 import KakaoRoadView from './KaKaoRoadView';
 
@@ -25,7 +25,7 @@ const PlaceInfo = () => {
     const dispatch = useDispatch();
     const [infoToggle, setInfoToggle] = useState(false);
     const [roadview, setRoadview] = useState(false);
-
+    // const { mutate: unboundMutate } = useSWRConfig();
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
     console.log(data);
 
