@@ -51,28 +51,34 @@ const PostBox = ({ posts }: IPostBox) => {
 
 
     return (
-        <div className="relative border-2 h-[90%]">
-            <ul className="mt-16 h-[80%]">
-                {isOnlyMyPost ?
-                    myPosts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
-                    :
-                    posts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
-                }
-            </ul>
-            <div onClick={onCheckClick} className="flex flex-col absolute top-16 right-5">
-                <label><input name="filter" id="all" type="radio" defaultChecked /> 전체 게시글</label>
-                <label><input name="filter" id="my" type="radio" /> 내 게시글</label>
-            </div>
-            <div className="flex items-center justify-center">
-                <svg onClick={onLeftClick} xmlns="http://www.w3.org/2000/svg" className="cursor-pointer h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-                <span className="select-none">
-                    {page} / {posts ? Math.ceil(posts.length / 6) : 0}</span>
-                <svg onClick={onRightClick} xmlns="http://www.w3.org/2000/svg" className="cursor-pointer h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-            </div>
+        <div className="relative bottom-0  h-[500px] ">
+            {posts.length === 0 ?
+                <div className="w-full h-full font-semibold flex justify-center items-center">게시글이 없습니다.</div>
+                :
+                <>
+                    <ul className="mt-16 h-[80%] ">
+                        {isOnlyMyPost ?
+                            myPosts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
+                            :
+                            posts.slice(page === 1 ? 0 : 6 * (page - 1), page === 1 ? 6 : 6 * page).map((item: PostWithUser, index: number) => <PostItem key={index} postInfo={item}></PostItem>)
+                        }
+                    </ul>
+                    <div onClick={onCheckClick} className="flex flex-col absolute top-20 right-5">
+                        <label><input name="filter" id="all" type="radio" defaultChecked /> 전체 게시글</label>
+                        <label><input name="filter" id="my" type="radio" /> 내 게시글</label>
+                    </div>
+                    <div className="flex items-center justify-center">
+                        <svg onClick={onLeftClick} xmlns="http://www.w3.org/2000/svg" className="cursor-pointer h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        <span className="select-none">
+                            {page} / {posts ? Math.ceil(posts.length / 6) : 0}</span>
+                        <svg onClick={onRightClick} xmlns="http://www.w3.org/2000/svg" className="cursor-pointer h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </>
+            }
         </div>
     )
 }
