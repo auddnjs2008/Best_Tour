@@ -26,6 +26,7 @@ export const markerSlice = createSlice({
     },
     closeStoreWindow: (state) => {
       state.storeWindow = false;
+      state.selectFileInfo = null;
     },
     selectFile: (state, action: PayloadAction<FileWithMarkers>) => {
       state.selectFileInfo = action.payload;
