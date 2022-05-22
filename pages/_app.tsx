@@ -19,11 +19,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <SWRConfig value={{ fetcher: (url: string) => fetch(url).then(response => response.json()) }}>
-      <div className="w-full h-[100vh]">
-        <Provider store={store}>
+      <Provider store={store}>
+        <div className="max-w-lg  w-[512px] mx-auto">
           <Component {...pageProps} />
-        </Provider>
-      </div>
+        </div>
+      </Provider>
     </SWRConfig>
   )
 }

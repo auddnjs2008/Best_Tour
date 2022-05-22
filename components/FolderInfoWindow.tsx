@@ -129,7 +129,7 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick, mut
     }, [data]);
 
     return (
-        <div className="absolute w-full h-[99%] max-w-lg     bottom-1 z-20 space-y-2 bg-white border-2 border-blue-500 p-3">
+        <div className="fixed w-full h-[99%] max-w-lg  bottom-1 z-20 space-y-2 bg-white border-2 border-blue-500 p-3">
             <header className="mb-10">
                 <div className="mb-5  flex justify-between items-center">
                     <button onClick={onFileInfoCloseClick}>

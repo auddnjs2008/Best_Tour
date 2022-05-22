@@ -16,7 +16,7 @@ const Search = () => {
 
 
     return (
-        <div onClick={onClick} className="w-full  mx-auto relative">
+        <div onClick={onClick} className="w-full  mx-auto relative  z-20">
             <SearchForm inputFocus={inputFocus} setInputFocus={setInputFocus} />
             {inputFocus ? <SearchInfo setInputFocus={setInputFocus} /> : null}
         </div>

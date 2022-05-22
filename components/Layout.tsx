@@ -21,7 +21,7 @@ const Layout = ({ children }: ILayout) => {
     }
 
     return (
-        <div className="realtive max-w-lg w-full h-full mx-auto ">
+        <div className="border-2  max-w-lg w-full h-full mx-auto ">
             {children}
             {likeWindow ? <LikeWindow></LikeWindow> : null}
             <nav className="bg-white fixed max-w-lg w-full bottom-1 flex justify-around align-middle border-2 border-yellow-400 p-3">

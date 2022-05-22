@@ -117,7 +117,7 @@ const PlaceInfo = () => {
     return (
         place_name ?
             <>
-                <div className="absolute bottom-20 p-3 z-20 bg-white max-w-lg w-full border-2 border-blue-500">
+                <div className="fixed bottom-20 p-3 z-20 bg-white max-w-lg w-full border-2 border-blue-500">
                     <button onClick={onInfoToggleClick} className="w-full flex justify-center ">
                         {infoToggle ?
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

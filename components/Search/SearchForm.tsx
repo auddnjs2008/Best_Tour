@@ -70,7 +70,7 @@ const SearchForm = ({ inputFocus, setInputFocus }: ISearchForm) => {
 
 
     return (
-        <form onSubmit={handleSubmit(onValid)} className="max-w-lg mx-auto flex content-center ">
+        <form onSubmit={handleSubmit(onValid)} className="realtive max-w-lg w-full mx-auto flex content-center ">
             <input onFocus={onFocus} className=" w-full mx-auto border-2 border-yellow-400 p-3 rounded-md outline-none shadow-lg px-16 "  {...register("place", { required: true })} type="text" placeholder="Search.." />
             {inputFocus ?
                 <button onClick={onClick} className="absolute left-5  translate-y-1/2">
