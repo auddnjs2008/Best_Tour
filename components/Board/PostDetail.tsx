@@ -53,7 +53,7 @@ const PostDetail = ({ post }: IPostResponse) => {
                     // 전송을 해줘야 한다.
 
                     if (result.length === 1) {
-                        setTimeout(() => { dispatch(focusMap(result[0])); }, 3000);
+                        setTimeout(() => { dispatch(focusMap(result[0])); }, 1000);
 
                     } else {
                         const realPlace = result.find((item: any) =>
@@ -62,7 +62,7 @@ const PostDetail = ({ post }: IPostResponse) => {
                             alert("등록된 장소가 없습니다.");
                             return;
                         }
-                        setTimeout(() => { dispatch(focusMap(realPlace)); }, 3000);
+                        setTimeout(() => { dispatch(focusMap(realPlace)); }, 1000);
                     }
                     router.push("/placeStore");
 
