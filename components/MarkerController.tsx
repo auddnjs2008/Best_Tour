@@ -84,7 +84,7 @@ const MarkerController = ({ markers, setSelectMarkers, }: IMarkerController) => 
     }
 
     return (
-        <div className="absolute top-0 right-0 z-20 p-1 border-2 border-blue-400 bg-white">
+        <div className="absolute  top-16 right-0 z-20 p-3 border-2 border-blue-400 bg-white">
             <button className="w-full flex justify-center items-center" onClick={onWindowToggle}>
                 {openWindow ?
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -98,23 +98,23 @@ const MarkerController = ({ markers, setSelectMarkers, }: IMarkerController) => 
             {openWindow ?
                 <>
                     <header onClick={onHeaderClick} className="flex mb-2 justify-center  items-center text-sm cursor-pointer">
-                        <div className={cls("mr-2", isColor ? "text-base font-semibold" : "")}>색깔</div>
-                        <div className={cls(isColor ? "" : "text-base font-semibold")}>파일</div>
+                        <div className={cls("mr-2 text-xl", isColor ? " font-semibold" : "")}>색깔</div>
+                        <div className={cls(isColor ? "" : " font-semibold", "text-xl")}>파일</div>
                     </header>
                     <div className=" flex justify-center items-center p-2">
                         {isColor ?
-                            <ul onClick={onColorClick} className=" space-y-1">
-                                <li data-id="#FF3D00" className={cls("rounded-full w-5 h-5 bg-[#FF3D00]", color === "#FF3D00" ? "ring-[#FF3D00] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#E67E33" className={cls("rounded-full w-5 h-5 bg-[#E67E33]", color === "#E67E33" ? "ring-[#E67E33] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#F1C40F" className={cls("rounded-full w-5 h-5 bg-[#F1C40F]", color === "#F1C40F" ? "ring-[#F1C40F] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#2ECC71" className={cls("rounded-full w-5 h-5 bg-[#2ECC71]", color === "#2ECC71" ? "ring-[#2ECC71] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#1ABC9C" className={cls("rounded-full w-5 h-5 bg-[#1ABC9C]", color === "#1ABC9C" ? "ring-[#1ABC9C] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#3498DB" className={cls("rounded-full w-5 h-5 bg-[#3498DB]", color === "#3498DB" ? "ring-[#3498DB] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#9B59B6" className={cls("rounded-full w-5 h-5 bg-[#9B59B6]", color === "#9B59B6" ? "ring-[#9B59B6] ring-2 border-2 border-white" : "")}></li>
-                                <li data-id="#000000" className={cls("rounded-full w-5 h-5 bg-[#000000]", color === "#000000" ? "ring-[#000000] ring-2 border-2 border-white" : "")}></li>
+                            <ul onClick={onColorClick} className=" space-y-2">
+                                <li data-id="#FF3D00" className={cls("rounded-full w-7 h-7 bg-[#FF3D00]", color === "#FF3D00" ? "ring-[#FF3D00] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#E67E33" className={cls("rounded-full w-7 h-7 bg-[#E67E33]", color === "#E67E33" ? "ring-[#E67E33] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#F1C40F" className={cls("rounded-full w-7 h-7 bg-[#F1C40F]", color === "#F1C40F" ? "ring-[#F1C40F] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#2ECC71" className={cls("rounded-full w-7 h-7 bg-[#2ECC71]", color === "#2ECC71" ? "ring-[#2ECC71] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#1ABC9C" className={cls("rounded-full w-7 h-7 bg-[#1ABC9C]", color === "#1ABC9C" ? "ring-[#1ABC9C] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#3498DB" className={cls("rounded-full w-7 h-7 bg-[#3498DB]", color === "#3498DB" ? "ring-[#3498DB] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#9B59B6" className={cls("rounded-full w-7 h-7 bg-[#9B59B6]", color === "#9B59B6" ? "ring-[#9B59B6] ring-2 border-2 border-white" : "")}></li>
+                                <li data-id="#000000" className={cls("rounded-full w-7 h-7 bg-[#000000]", color === "#000000" ? "ring-[#000000] ring-2 border-2 border-white" : "")}></li>
                             </ul>
                             :
-                            <ul onClick={onFolderClick} className="text-sm font-semibold">
+                            <ul onClick={onFolderClick} className="text-lg font-semibold">
                                 {data?.folders.map(folder =>
                                     <li key={folder.id} data-fileId={folder.id} className={cls("cursor-pointer", +folderId === folder.id ? "text-yellow-400" : "")}>{folder.name}</li>
                                 )}

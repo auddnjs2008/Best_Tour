@@ -37,7 +37,7 @@ const ImagesWindow = ({ images }: IImagesWindow) => {
 
 
     return (
-        <div className="w-full h-full z-40  absolute top-0 left-0  ">
+        <div className="w-full h-full z-40  fixed top-0 left-0  ">
             <div className="flex relative justify-center items-center  w-full h-full bg-[rgba(0,0,0,0.9)]">
                 <button onClick={onCloseClick} className="absolute top-10 right-10  text-white ">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 " fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

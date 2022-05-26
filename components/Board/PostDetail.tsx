@@ -62,7 +62,7 @@ const PostDetail = ({ post }: IPostResponse) => {
                             alert("등록된 장소가 없습니다.");
                             return;
                         }
-                        setTimeout(() => { dispatch(focusMap(realPlace)); }, 500);
+                        setTimeout(() => { dispatch(focusMap(realPlace)); }, 1000);
                     }
                     router.push("/placeStore");
 
