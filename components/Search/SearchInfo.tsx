@@ -49,7 +49,7 @@ const SearchInfo = ({ setInputFocus }: ISearchInfo) => {
     }
 
     return (
-        <div className="absolute max-w-lg z-30 top-14 w-full mx-auto h-[100vh] overflow-scroll scrollbar-hide  bg-white ">
+        <div className="absolute max-w-lg z-30 top-16 w-full mx-auto h-[100vh] overflow-scroll scrollbar-hide  bg-white ">
             <div>
                 <div onClick={onKindClick} className="p-3">
                     <span className={cls("  mr-5 cursor-pointer", recentSearch ? "text-lg font-bold" : "text-sm text-gray-600")}>최근검색</span>

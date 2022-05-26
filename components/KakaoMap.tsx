@@ -108,7 +108,7 @@ const KakaoMap = ({ markers }: IKaKaoMap) => {
     }, [markers])
 
 
-    return <div className="mx-auto fixed top-0" id="map" style={{ width: "510px", height: "99vh" }}>
+    return <div className="mx-auto fixed top-0" id="map" style={{ width: "510px", height: "100%" }}>
         <MarkerController markers={markers ? markers : []} setSelectMarkers={setSelectMarkers} />
     </div>
 
