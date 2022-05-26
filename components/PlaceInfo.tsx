@@ -27,7 +27,7 @@ const PlaceInfo = () => {
     const [roadview, setRoadview] = useState(false);
     // const { mutate: unboundMutate } = useSWRConfig();
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
-    console.log(data);
+
 
     const { mutate: allMarkMutate } = useSWR("/api/markers/allMark");
 
