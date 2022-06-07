@@ -113,10 +113,10 @@ const FolderInfoWindow = ({ folderInfo, setFolderInfo, onFileInfoCloseClick, mut
         if (target) {
 
             const marker = folderInfo.markers[parseInt(id)];
-            router.pathname !== "/placeStore" ? setTimeout(() => getPlaceInfo(marker.name), 500) : getPlaceInfo(marker.name);
+            router.pathname !== "/" ? setTimeout(() => getPlaceInfo(marker.name), 500) : getPlaceInfo(marker.name);
             onFileInfoCloseClick();
             dispatch(closeWindow());
-            if (router.pathname !== "/placeStore") router.push("/placeStore");
+            if (router.pathname !== "/") router.push("/");
         }
     }
 

@@ -64,7 +64,7 @@ const PostDetail = ({ post }: IPostResponse) => {
                         }
                         setTimeout(() => { dispatch(focusMap(realPlace)); }, 1000);
                     }
-                    router.push("/placeStore");
+                    router.push("/");
 
                 } else {
                     alert("장소를 발견하지 못했습니다. 주소나 이름을 다시 써주세요");

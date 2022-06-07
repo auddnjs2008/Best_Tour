@@ -31,7 +31,7 @@ const FolderCreateBox = ({ onCloseFolderCreate }: IFolderCreateBox) => {
 
 
     return (
-        <div className="fixed w-full h-1/2 max-w-lg     bottom-1 z-20 space-y-2 bg-white border-2 border-blue-500 p-3">
+        <div className="fixed w-full h-1/2 max-w-lg     bottom-1 z-40 space-y-2 bg-white border-2 border-blue-500 p-3">
             <header className="flex justify-between mb-10">
                 <h1 className="text-lg font-semibold">새 폴더 추가</h1>
                 <svg onClick={onCloseFolderCreate} xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

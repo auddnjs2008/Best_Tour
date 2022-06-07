@@ -3,12 +3,13 @@ import { cls } from '@libs/client/utils';
 import { RootState } from '@modules/index';
 import { openImageWindow, toggleWindow } from '@modules/LikeSlice'
 import { closeStoreWindow, selectFile } from '@modules/markerSlice';
-import { File, Marker } from '@prisma/client';
-import { IallMarkResult } from 'pages/placeStore';
+import { Marker } from '@prisma/client';
+import { IallMarkResult } from 'pages';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import useSWR, { KeyedMutator, useSWRConfig, } from 'swr';
+import FolderCreateBox from './FolderCreateBox';
 import ImagesWindow from './ImagesWindow';
 import { IPlaceResponse } from './PlaceInfo';
 
@@ -41,6 +42,7 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
     const dispatch = useDispatch();
     const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
+    const [createFolder, setCreateFolder] = useState(false);
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
     const [imageLoad, setImageLoad] = useState(false);
 
@@ -49,7 +51,7 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
 
 
     const [markerSave, { data, loading, error }] = useMutation("/api/markers/create");
-    const { data: folderData } = useSWR("/api/folder/foldersInfo");
+    const { data: folderData, mutate } = useSWR("/api/folder/foldersInfo");
     const { data: markerData, mutate: markerMutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${place_id}`);
 
 
@@ -77,6 +79,14 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
     }
     const onPreviewClick = () => {
         dispatch(openImageWindow());
+    }
+
+    const onCloseFolderCreate = () => {
+        setCreateFolder(false);
+    }
+
+    const onFolderCreateClick = () => {
+        setCreateFolder(true);
     }
 
 
@@ -147,27 +157,35 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
         //사진 개수 제한 필요
         if (photo && photo.length > 0) {
 
+
             if (photo.length > 4) {
                 alert("사진은 4장 이하까지 가능합니다.");
                 resetField("files");
                 return;
             }
             const photoArr = Array.from(photo).map((item: Blob) => URL.createObjectURL(item));
+
             setPhotoPreview(photoArr);
         }
     }, [photo])
 
 
 
+
+    useEffect(() => {
+
+        if (initColor) {
+            setColor(initColor);
+        }
+    }, [initColor]);
+
     useEffect(() => {
         if (imageUrls) {
             const fixedUrls = imageUrls.split(" ").map((url: string) => `https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${url}/public`)
             setPhotoPreview(fixedUrls);
+
         }
-        if (initColor) {
-            setColor(initColor);
-        }
-    }, [imageUrls, initColor]);
+    }, [imageUrls]);
 
 
     useEffect(() => {
@@ -175,6 +193,12 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
             dispatch(closeStoreWindow());
         }
     }, [data])
+
+    useEffect(() => {
+        if (createFolder === false) {
+            mutate();
+        }
+    }, [createFolder])
 
     return (
         <>
@@ -236,10 +260,11 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
                                 </li>
                             )}
                         </ul>
-                        <button className="w-full border-2 p-2 border-blue-500 text-blue-500">새 폴더 추가하기</button>
+                        <button onClick={onFolderCreateClick} className="w-full border-2 p-2 border-blue-500 text-blue-500">새 폴더 추가하기</button>
                     </div>}
             </div>
             {imageWindow ? <ImagesWindow images={photoPreview} /> : null}
+            {createFolder ? <FolderCreateBox onCloseFolderCreate={onCloseFolderCreate} /> : null}
         </>
     )
 }

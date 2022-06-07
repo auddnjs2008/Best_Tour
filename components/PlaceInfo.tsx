@@ -5,9 +5,9 @@ import { openImageWindow } from '@modules/LikeSlice';
 import { openStoreWindow } from '@modules/markerSlice';
 import { Marker } from '@prisma/client';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import ImagesWindow from './ImagesWindow';
 import KakaoRoadView from './KaKaoRoadView';
 
@@ -22,10 +22,11 @@ const PlaceInfo = () => {
     const { focusPosition: { id, place_name, address_name, x, y, category_name, place_url } } = useSelector((state: RootState) => state.map);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const { storeWindow } = useSelector((state: RootState) => state.marker);
+
     const dispatch = useDispatch();
     const [infoToggle, setInfoToggle] = useState(false);
     const [roadview, setRoadview] = useState(false);
-    // const { mutate: unboundMutate } = useSWRConfig();
+
     const { data, mutate } = useSWR<IPlaceResponse>(`/api/markers/markInfo?placeId=${id}`);
 
 
@@ -79,16 +80,16 @@ const PlaceInfo = () => {
                 imageUrl:
                     "https://usecloud.s3-ap-northeast-1.amazonaws.com/kakaoMapIcon/%EA%B4%80%EA%B4%91%EC%A7%80.png",
                 link: {
-                    mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app/placeStore',
-                    webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app/placeStore',
+                    mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
+                    webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
                 },
             },
             buttons: [
                 {
                     title: '웹으로 보기',
                     link: {
-                        mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app/placeStore',
-                        webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app/placeStore',
+                        mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
+                        webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
                     },
                 },
             ],
@@ -114,11 +115,12 @@ const PlaceInfo = () => {
     }, [messageLoaded])
 
 
+
     return (
         place_name ?
             <>
                 <div className="fixed bottom-16 p-3 z-20 bg-white max-w-lg w-full border-2 border-blue-500">
-                    <button onClick={onInfoToggleClick} className="w-full flex justify-center ">
+                    <button onClick={onInfoToggleClick} className="w-full outline-none flex justify-center ">
                         {infoToggle ?
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -156,7 +158,7 @@ const PlaceInfo = () => {
                     {infoToggle ?
                         <div className="mt-5">
                             <div onClick={onImageBoxClick} className="w-full mb-5 grid grid-cols-3 grid-rows-2 border-2 h-[230px]">
-                                {data?.marker?.imageUrls.split(" ").map((item, index) => <div key={index} className="relative bg-gray-400 w-full border-2" >
+                                {data?.marker?.imageUrls && data?.marker?.imageUrls.split(" ").map((item, index) => <div key={index} className="relative bg-gray-400 w-full border-2" >
                                     <Image layout="fill" src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${item}/public`} />
                                 </div>)}
                             </div>

@@ -1,7 +1,7 @@
 import { cls } from '@libs/client/utils';
 import { closeImageWindow } from '@modules/LikeSlice';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 interface IImagesWindow {
@@ -11,7 +11,9 @@ interface IImagesWindow {
 const ImagesWindow = ({ images }: IImagesWindow) => {
 
     const [number, setNumber] = useState(1);
+
     const dispatch = useDispatch();
+
 
 
     const onCloseClick = () => {

@@ -25,7 +25,7 @@ const Layout = ({ children }: ILayout) => {
             {children}
             {likeWindow ? <LikeWindow></LikeWindow> : null}
             <nav className="bg-white fixed max-w-lg w-full bottom-1 flex justify-around align-middle border-2 border-yellow-400 p-4">
-                <Link href={"/placeStore"}>
+                <Link href={"/"}>
                     <a className={router.pathname === "/placeStore" ? "text-blue-500" : ""}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

@@ -33,13 +33,11 @@ const PostWrite = () => {
 
     const { register, handleSubmit, watch, resetField } = useForm<IPostForm>();
     const photos = watch("files");
-    const inputAddress = watch("address");
     const dispatch = useDispatch();
     const [previewPhotos, setPreviewPhotos] = useState<string[] | null>(null);
     const [imageLoad, setImageLoad] = useState(false);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const [mutate, { data: postData, loading, error }] = useMutation<IPostResponse>("/api/post/create");
-    const mapLoaded = useMap();
     const router = useRouter();
 
     const getImageId = (form: FormData, uploadURL: string) => {

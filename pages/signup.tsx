@@ -48,7 +48,7 @@ const SignUp: NextPage = () => {
     useEffect(() => {
         if (tokenData?.ok) {
             createFolder({ name: "기본", info: "기본폴더" });
-            router.push("/placeStore");
+            router.push("/");
         }
     }, [tokenData, router])
 

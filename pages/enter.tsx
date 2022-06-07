@@ -20,7 +20,7 @@ const Enter: NextPage = () => {
     }
     useEffect(() => {
         if (data?.ok) {
-            router.push("/placeStore");
+            router.push("/");
         } else if (data?.error) {
             alert(data?.error);
         }
