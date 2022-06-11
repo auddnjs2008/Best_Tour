@@ -1,6 +1,7 @@
 
 import useMap from '@libs/client/useMap';
 import { RootState } from '@modules/index';
+import { closeWindow } from '@modules/LikeSlice';
 import { focusMap } from '@modules/mapSlice';
 import { searchData } from '@modules/searchSlice';
 import React, { Dispatch, MutableRefObject, RefObject, SetStateAction, useEffect, useRef, useState } from 'react';
@@ -9,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 interface FormValue {
     place: string;
+    fake: string;
 }
 
 interface ISearchForm {
@@ -18,7 +20,8 @@ interface ISearchForm {
 }
 
 const SearchForm = ({ inputFocus, setInputFocus }: ISearchForm) => {
-    const { register, handleSubmit, resetField, watch, } = useForm<FormValue>();
+    const { register, handleSubmit, resetField, watch, setFocus } = useForm<FormValue>();
+
     const mapLoaded = useMap();
     const watchInput = watch("place");
     const dispatch = useDispatch();
@@ -60,9 +63,7 @@ const SearchForm = ({ inputFocus, setInputFocus }: ISearchForm) => {
     }
 
     const onFocus = (e: React.FocusEvent) => {
-        console.log(e.target);
-
-        console.log("tt");
+        dispatch(focusMap({ x, y }));
         setInputFocus(true);
     }
 
@@ -78,6 +79,11 @@ const SearchForm = ({ inputFocus, setInputFocus }: ISearchForm) => {
         setInputFocus(false);
     }
 
+    useEffect(() => {
+        if (!inputFocus) {
+            setFocus("fake");
+        }
+    }, [inputFocus])
 
 
 
@@ -99,6 +105,7 @@ const SearchForm = ({ inputFocus, setInputFocus }: ISearchForm) => {
                     </svg>
                 </button> : null
             }
+            <input className="absolute -top-10" {...register("fake")} />
 
         </form>
 

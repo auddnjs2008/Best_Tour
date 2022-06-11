@@ -20,6 +20,7 @@ const Search = () => {
     const [enter, setEnter] = useState(false);
     const data = useSelector((state: RootState) => state.search.data);
 
+
     const { data: searchesData } = useSWR<ISearchesResponse>("/api/recentSearch/getInfo");
     const [createSearch] = useMutation("/api/recentSearch/create");
 
@@ -70,9 +71,11 @@ const Search = () => {
                 setInputFocus(false);
                 createSearch(newData);
                 setTimeout(() => { setEnter(false) }, 1000);
+
+
             }
         }
-    }, [enter])
+    }, [enter]);
 
     useEffect(() => {
 
@@ -91,6 +94,7 @@ const Search = () => {
         <div onClick={onClick} className="w-full  mx-auto relative  z-20">
             <SearchForm inputFocus={inputFocus} setInputFocus={setInputFocus} />
             {inputFocus ? <SearchInfo recentSearch={recentSearch} setRecentSearch={setRecentSearch} keyIndex={keyIndex} setInputFocus={setInputFocus} /> : null}
+
         </div>
     )
 }
