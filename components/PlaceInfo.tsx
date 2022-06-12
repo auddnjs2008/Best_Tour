@@ -80,16 +80,16 @@ const PlaceInfo = () => {
                 imageUrl:
                     "https://usecloud.s3-ap-northeast-1.amazonaws.com/kakaoMapIcon/%EA%B4%80%EA%B4%91%EC%A7%80.png",
                 link: {
-                    mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
-                    webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
+                    mobileWebUrl: 'https://best-tour-dk49tm9hv-auddnjs2008.vercel.app',
+                    webUrl: 'https://best-tour-dk49tm9hv-auddnjs2008.vercel.app',
                 },
             },
             buttons: [
                 {
                     title: '웹으로 보기',
                     link: {
-                        mobileWebUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
-                        webUrl: 'https://best-tour-2g0u784v6-auddnjs2008.vercel.app',
+                        mobileWebUrl: 'https://best-tour-dk49tm9hv-auddnjs2008.vercel.app',
+                        webUrl: 'https://best-tour-dk49tm9hv-auddnjs2008.vercel.app',
                     },
                 },
             ],
