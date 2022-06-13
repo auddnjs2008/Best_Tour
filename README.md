@@ -63,8 +63,7 @@
     /   :   SSR 방식을 활용을 하였습니다.  CSR로 불러올 경우 마커들의 데이터를 찾아올 동안 지도에 아무 화면도 안 나오는게 싫어  SSR 방식을 채택을 하였습니다. 
              단 로그인 페이지에서 로그인이 성공하면 / 페이지로 이동을 하는데 약간의 시간이 걸립니다. 아마  SSR 방식을 쓰기 때문에 이런 현상이 일어나는 거 같은데 추후 수정 필요              합니다.
              
-    /PlaceBoard: ISR 방식을 활용을 하였습니다. Incremental Static Re-Generation 방식으로 static generation 방식은 언제나 빌드 시점 에 페이지를 생성하지만, ISR 방식은 일정                    주기마다 데이터의 최신 여부를 검사하고 업데이트된 데이터로 페이지를 다시 생성합니다. 일단 이 페이지에서는 모든 유저의 글을 가져오기 때문에  정적페이지로 만드는
-                 게 용이하였고 revalidate 속성을 활용해 업데이트를 할 수 있으므로 적합하다 판단하여 적용을 하였습니다.
+    /PlaceBoard: ISR 방식을 활용을 하였습니다. Incremental Static Re-Generation 방식으로 static generation 방식은 언제나 빌드 시점 에 페이지를 생성하지만, ISR 방식은 일정  주기마다 데이터의 최신 여부를 검사하고 업데이트된 데이터로 페이지를 다시 생성합니다. 일단 이 페이지에서는 모든 유저의 글을 가져오기 때문에  정적페이지로 만드는게 용이하였고 revalidate 속성을 활용해 업데이트를 할 수 있으므로 적합하다 판단하여 적용을 하였습니다.
                  
     /MyPage : CSR 방식을 활용을 하였습니다. 먼저 User 데이터를 SSR 방식으로 적용시킬 필요가 없다 생각하여 적용을 하였습니다.
     
@@ -76,7 +75,7 @@
  
  ## url
  
- https://best-tour-jhtn26lzs-auddnjs2008.vercel.app/myProfile
+ https://best-tour-jhtn26lzs-auddnjs2008.vercel.app
      
 
 
