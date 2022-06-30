@@ -40,7 +40,7 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
     const { selectFileInfo } = useSelector((state: RootState) => state.marker);
     const { imageWindow } = useSelector((state: RootState) => state.like);
     const dispatch = useDispatch();
-    const { handleSubmit, register, watch, resetField } = useForm<IStoreSubmit>();
+    const { handleSubmit, register, watch, resetField, setValue } = useForm<IStoreSubmit>();
     const [color, setColor] = useState("");
     const [createFolder, setCreateFolder] = useState(false);
     const [photoPreview, setPhotoPreview] = useState<string[]>([]);
@@ -200,6 +200,15 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
         }
     }, [createFolder])
 
+    useEffect(() => {
+        if (place_name) {
+            setValue("name", place_name);
+        }
+        if (message) {
+            setValue("info", message);
+        }
+    }, [place_name, message])
+
     return (
         <>
             <div className="fixed w-full max-w-lg  bottom-1 z-40 space-y-2 bg-white border-2 border-blue-500 p-3">
@@ -220,8 +229,8 @@ const StoreBox = ({ markersMutate }: IStoreBox) => {
                             </div>
                         </div>
                         <form onSubmit={handleSubmit(onValid)} className="flex flex-col">
-                            <input {...register("name", { required: true, value: place_name })} value={place_name} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="이름" />
-                            <input {...register("info", { required: true })} value={message} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="설명을 입력해 주세요." />
+                            <input {...register("name", { required: true })} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="이름" />
+                            <input {...register("info", { required: true })} className="outline-none bg-gray-200 p-2 mb-2" type="text" placeholder="설명을 입력해 주세요." />
                             <label className=" text-black bg-yellow-400 mb-7 p-2">
                                 이미지를 올려주세요
                                 <input {...register("files")} className="hidden" type="file" accept="image/*" multiple={true} />

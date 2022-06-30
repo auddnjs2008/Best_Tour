@@ -46,45 +46,45 @@ const PlaceStore: NextPage = () => {
 }
 
 
-const Page: NextPage<{ markers: MarkerWithFile[] }> = ({ markers }) => {
-    return (
-        <SWRConfig
-            value={{
-                fallback: {
-                    "/api/markers/allMark": {
-                        ok: true,
-                        markers
-                    }
-                }
-            }}
-        >
-            <PlaceStore />
-        </SWRConfig>
+// const Page: NextPage<{ markers: MarkerWithFile[] }> = ({ markers }) => {
+//     return (
+//         <SWRConfig
+//             value={{
+//                 fallback: {
+//                     "/api/markers/allMark": {
+//                         ok: true,
+//                         markers
+//                     }
+//                 }
+//             }}
+//         >
+//             <PlaceStore />
+//         </SWRConfig>
 
-    )
-}
+//     )
+// }
 
-export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
+// export const getServerSideProps = withIronSessionSsr(async function ({ req, res }) {
 
-    const markers = await client.marker.findMany({
-        where: {
-            userId: (req.session as any).user.id,
-        },
-        include: {
-            file: true,
-        }
-    });
+//     const markers = await client.marker.findMany({
+//         where: {
+//             userId: (req.session as any).user.id,
+//         },
+//         include: {
+//             file: true,
+//         }
+//     });
 
 
-    return {
-        props: {
-            markers: JSON.parse(JSON.stringify(markers))
-        }
-    }
+//     return {
+//         props: {
+//             markers: JSON.parse(JSON.stringify(markers))
+//         }
+//     }
 
-}, {
-    cookieName: "besttoursession",
-    password: process.env.SESSION_KEY!,
-})
+// }, {
+//     cookieName: "besttoursession",
+//     password: process.env.SESSION_KEY!,
+// })
 
-export default Page;
+export default PlaceStore;
