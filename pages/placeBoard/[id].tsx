@@ -3,13 +3,17 @@ import PostDetail from '@components/Board/PostDetail';
 import Layout from '@components/Layout';
 import client from '@libs/server/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import React from 'react';
 
 
 interface IBoardPost {
     post: PostWithUser
 }
 
-const BoardPost: NextPage<IBoardPost> = ({ post }) => {
+
+
+
+const BoardPost: NextPage<IBoardPost> = ({ post }: IBoardPost) => {
 
     return (
         <Layout>

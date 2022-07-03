@@ -3,9 +3,10 @@ import useUser from '@libs/client/useUser';
 import { Reply, User } from '@prisma/client';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
+
 
 
 interface IReplyForm {
@@ -30,19 +31,21 @@ const ReplyBox = () => {
     const { register, handleSubmit, reset } = useForm<IReplyForm>();
     const { data, mutate } = useSWR<IAllReply>(router.query.id ? `/api/reply/allReply?postId=${router.query.id}` : "");
 
+
     const [replyCreate, { data: _, loading }] = useMutation("/api/reply/create");
 
     const onValid = ({ message }: IReplyForm) => {
         if (loading) return;
         if (!router.query.id) return;
         replyCreate({ postId: +(router.query.id), message });
+
         mutate((prev) => ({
-            ...prev!,
+            ...prev,
             ok: true,
             replies: [
                 ...(prev?.replies!),
                 {
-                    postId: +(router.query.id!), userId: user.id, id: -1, message, createdAt: new Date, updatedAt: new Date, user: { name: user.name, avatar: user.avatar }
+                    postId: +(router.query.id!), userId: user.id, id: -1, message, createdAt: JSON.parse(JSON.stringify(new Date)), updatedAt: JSON.parse(JSON.stringify(new Date)), user: { name: user.name, avatar: user.avatar }
                 }
             ]
         }), false);

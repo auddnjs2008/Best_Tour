@@ -92,70 +92,67 @@ const PostDetail = ({ post }: IPostResponse) => {
     }
 
     return (
-        <div>
-            <header className="z-20 bg-white fixed max-w-lg w-full top-0 text-center border-2 p-3 border-yellow-400">{post.title}</header>
-            <div className="mt-16 pb-20 ">
-                <div className="mb-14 text-center relative">
-                    <div>
-                        <h1 className="mb-5 text-xl font-semibold text-blue-400">{post.placeName}</h1>
-                        <div>{post.address}</div>
-                    </div>
-                    <div className="flex justify-end mt-2">
-                        <button onClick={onMoveMapClick} className=" flex border-2 rounded-md p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                            </svg>
-                            지도보기
-                        </button>
-                        {user?.id === post.userId ?
-                            <button onClick={onDelClick} className="flex items-center border-2 p-2 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="text-red-500 h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        post ?
+            <div>
+                <header className="z-20 bg-white fixed max-w-lg w-full top-0 text-center border-2 p-3 border-yellow-400">{post.title}</header>
+                <div className="mt-16 pb-20 ">
+                    <div className="mb-14 text-center relative">
+                        <div>
+                            <h1 className="mb-5 text-xl font-semibold text-blue-400">{post.placeName}</h1>
+                            <div>{post.address}</div>
+                        </div>
+                        <div className="flex justify-end mt-2">
+                            <button onClick={onMoveMapClick} className=" flex border-2 rounded-md p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                                 </svg>
-                                삭제
+                                지도보기
                             </button>
-                            : null
-                        }
+                            {user?.id === post.userId ?
+                                <button onClick={onDelClick} className="flex items-center border-2 p-2 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="text-red-500 h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                    삭제
+                                </button>
+                                : null
+                            }
+                        </div>
                     </div>
+                    {post.imageUrls ?
+                        <div className="flex relative items-center mb-10 w-[32rem] h-[300px] overflow-hidden ">
+                            <ul style={{ transform: `translateX(${-1 * (number - 1) * 512}px)` }} className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
+                                {post.imageUrls.split(" ").map((image, index) =>
+                                    <li key={index} className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
+                                        <Image src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${image}/public`} layout="fill" objectFit="contain"></Image>
+
+                                    </li>
+                                )}
+
+                            </ul>
+                            <div onClick={onLeftClick} className="absolute top-1/2 left-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </div>
+                            <div onClick={onRightClick} className="absolute top-1/2  right-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        :
+                        null}
+                    <p className="p-2 leading-7 select-none ">
+                        {post.Message}
+                    </p>
                 </div>
-                {post.imageUrls ?
-                    <div className="flex relative items-center mb-10 w-[32rem] h-[300px] overflow-hidden ">
-                        <ul style={{ transform: `translateX(${-1 * (number - 1) * 512}px)` }} className={`flex select-none -translate-x-[${(number - 1) * 512}px]`}>
-                            {post.imageUrls.split(" ").map((image, index) =>
-                                <li key={index} className="relative max-w-lg w-[32rem] h-[300px] flex-shrink-0 bg-gray-100">
-                                    <Image src={`https://imagedelivery.net/gVd53M-5CbHwtF6A9rt30w/${image}/public`} layout="fill" objectFit="contain"></Image>
-
-                                </li>
-                            )}
-
-                        </ul>
-                        <div onClick={onLeftClick} className="absolute top-1/2 left-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </div>
-                        <div onClick={onRightClick} className="absolute top-1/2  right-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
-                    </div>
-                    :
-                    null}
-                <p className="p-2 leading-7 select-none ">
-                    {post.Message}
-                </p>
+                <ReplyBox />
             </div>
-            <ReplyBox />
-        </div>
+            :
+            <div>Loading</div>
+
     )
 
 }
-
-
-
-
-
-
-
 export default PostDetail;
