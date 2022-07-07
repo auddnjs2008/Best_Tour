@@ -2,9 +2,7 @@ import useMap from '@libs/client/useMap';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@modules/index';
-import { focusMap } from "@modules/mapSlice";
-import useSWR from 'swr';
-import { File, Marker } from '@prisma/client';
+import { Marker } from '@prisma/client';
 import kakaoSearch from '@libs/client/kakaoSearch';
 import MarkerController from './MarkerController';
 
@@ -64,6 +62,22 @@ const KakaoMap = ({ markers }: IKaKaoMap) => {
 
     }
 
+    const initMap = (latitude: number, longitude: number, container: HTMLElement) => {
+        const options = {
+            center: new window.kakao.maps.LatLng(latitude, longitude),
+            level: 20
+        }
+        const map = new window.kakao.maps.Map(container, options);
+        centerMarker.current = new window.kakao.maps.Marker({ map });
+        centerMarker.current.setPosition(
+            new window.kakao.maps.LatLng(latitude, longitude)
+        );
+        setMap(map);
+
+        selectMarkers?.forEach((marker) => makeMarker(marker, map));
+
+    }
+
 
     useEffect(() => {
 
@@ -74,19 +88,10 @@ const KakaoMap = ({ markers }: IKaKaoMap) => {
             navigator.geolocation.getCurrentPosition((position) => {
 
                 const { coords: { latitude, longitude } } = position;
-
-                const options = {
-                    center: new window.kakao.maps.LatLng(latitude, longitude),
-                    level: 20
-                }
-                const map = new window.kakao.maps.Map(container, options);
-                centerMarker.current = new window.kakao.maps.Marker({ map });
-                centerMarker.current.setPosition(
-                    new window.kakao.maps.LatLng(latitude, longitude)
-                );
-                setMap(map);
-
-                selectMarkers?.forEach((marker) => makeMarker(marker, map));
+                if (container)
+                    initMap(latitude, longitude, container);
+            }, (error) => {
+                if (container) initMap(37.565, 126.978, container);
             })
         });
 
